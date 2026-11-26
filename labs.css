@@ -1,13 +1,13 @@
 :root {
-  color-scheme: dark;
-  --ink: #101b19;
-  --panel: #162421;
-  --mint: #b8f7d5;
-  --lime: #d2f582;
-  --white: #edf4ee;
-  --muted: #adbbb2;
-  --line: #394940;
-  --warn: #ffd89d;
+  color-scheme: light;
+  --ink: #f4f7f2;
+  --panel: #ffffff;
+  --mint: #21604f;
+  --lime: #275c47;
+  --white: #182d29;
+  --muted: #485f57;
+  --line: #bdcac1;
+  --warn: #834311;
   font-family: "Segoe UI", Arial, sans-serif;
   background: var(--ink);
   color: var(--white);
@@ -191,7 +191,7 @@ h3 {
 select {
   width: 100%;
   padding: 10px;
-  background: #0f1916;
+  background: #f9fbf8;
   color: var(--white);
   border: 1px solid var(--line);
   border-radius: 5px;
@@ -219,7 +219,7 @@ select {
 }
 .readout div {
   padding: 12px 8px;
-  background: #0e1915;
+  background: #f1f6f0;
   border: 1px solid var(--line);
   border-radius: 5px;
 }
@@ -273,7 +273,7 @@ select {
 .skip:focus {
   left: 12px;
   top: 8px;
-  background: #000;
+  background: #fff;
   padding: 12px;
   z-index: 5;
 }
@@ -317,6 +317,7 @@ footer {
   height: auto;
   margin: 8px 0 14px;
   background: #101b16;
+  filter: invert(1) hue-rotate(160deg);
   border: 1px solid var(--line);
   border-radius: 8px;
 }

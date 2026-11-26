@@ -1,11 +1,11 @@
 :root {
-  color-scheme: dark;
-  --bg: #101815;
-  --panel: #19241f;
-  --line: #35473d;
-  --ink: #f1f5ed;
-  --muted: #bac8be;
-  --lime: #c3ed85;
+  color-scheme: light;
+  --bg: #f4f7f2;
+  --panel: #ffffff;
+  --line: #becbc1;
+  --ink: #182d29;
+  --muted: #485f57;
+  --lime: #275c47;
   font:
     16px/1.6 "Segoe UI",
     system-ui,
@@ -25,14 +25,14 @@ a {
 }
 a:focus-visible,
 summary:focus-visible {
-  outline: 3px solid #ffcf81;
+  outline: 3px solid #914c12;
   outline-offset: 4px;
 }
 .skip {
   position: absolute;
   left: 1rem;
   top: -8rem;
-  background: #18251d;
+  background: #ffffff;
   padding: 0.65rem;
 }
 .skip:focus {
@@ -133,14 +133,14 @@ p {
   gap: 1.6rem;
   padding: 0.7rem 1.15rem;
   background: var(--lime);
-  color: #111c15;
+  color: #ffffff;
   border-radius: 0.4rem;
   text-decoration: none;
   font-weight: 700;
   margin-top: 0.65rem;
 }
 .action:hover {
-  background: #dbffa7;
+  background: #174332;
 }
 nav {
   display: flex;
@@ -189,7 +189,7 @@ article p:last-child {
   max-width: none;
   padding: 0.9rem 1.1rem;
   border-left: 3px solid var(--lime);
-  background: #1d2d24;
+  background: #e3f0e5;
 }
 .evidence strong {
   display: block;
@@ -218,9 +218,9 @@ article p:last-child {
 }
 .rack {
   margin: 0;
-  border: 2px solid #4e6155;
+  border: 2px solid #81988a;
   border-radius: 0.6rem;
-  background: #0c120f;
+  background: #dae5dc;
   padding: 1rem;
 }
 .rack div {
@@ -229,7 +229,7 @@ article p:last-child {
   gap: 0.5rem;
   align-items: center;
   border: 1px solid var(--line);
-  background: #25382c;
+  background: #ffffff;
   padding: 0.55rem;
   margin-top: 0.25rem;
 }
@@ -245,10 +245,10 @@ code {
   min-height: 6.3rem;
   background: repeating-linear-gradient(
     0deg,
-    #1a231e,
-    #1a231e 6px,
-    #202d24 6px,
-    #202d24 8px
+    #e9f0e9,
+    #e9f0e9 6px,
+    #dce7db 6px,
+    #dce7db 8px
   );
 }
 .rack .ups {
@@ -256,8 +256,8 @@ code {
   border-left: 4px solid var(--lime);
 }
 .path {
-  color: #ddf6bb;
-  background: #16231a;
+  color: #204d39;
+  background: #e3efe3;
   padding: 0.65rem;
   overflow-wrap: anywhere;
 }
@@ -316,7 +316,7 @@ footer {
   padding: clamp(1rem, 3vw, 2rem);
   border: 1px solid #5c785f;
   border-radius: 0.65rem;
-  background: #162119;
+  background: #ffffff;
 }
 .sizing-sheet h3 {
   margin: 0;
@@ -349,10 +349,10 @@ footer {
   font-size: 1rem;
 }
 .sizing-fields input[aria-invalid="true"] {
-  border-color: #f3ab87;
+  border-color: #983f27;
 }
 .sizing-sheet :is(input, button):focus-visible {
-  outline: 3px solid #ffcf81;
+  outline: 3px solid #914c12;
   outline-offset: 3px;
 }
 .sizing-results dl {
@@ -375,7 +375,7 @@ footer {
   display: none;
 }
 #sizing-error {
-  color: #ffd0ae;
+  color: #8a371e;
 }
 .sizing-sheet button {
   border-radius: 0.3rem;

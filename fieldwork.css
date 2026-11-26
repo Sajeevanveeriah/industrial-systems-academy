@@ -1,11 +1,11 @@
 :root {
-  color-scheme: dark;
-  --ink: #101714;
-  --panel: #19221d;
-  --line: #354139;
-  --text: #f2f3e9;
-  --muted: #b2bcb1;
-  --mint: #c0ed89;
+  color-scheme: light;
+  --ink: #f4f7f2;
+  --panel: #ffffff;
+  --line: #bdcac1;
+  --text: #182d29;
+  --muted: #485f57;
+  --mint: #275c47;
 }
 * {
   box-sizing: border-box;
@@ -184,7 +184,7 @@ footer {
   background: var(--ink);
 }
 :focus-visible {
-  outline: 3px solid #eec88f;
+  outline: 3px solid #914c12;
   outline-offset: 3px;
 }
 @media (max-width: 700px) {

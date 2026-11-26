@@ -1,13 +1,13 @@
 :root {
-  color-scheme: dark;
-  --bg: #101915;
-  --surface: #15221b;
-  --line: #35483b;
-  --text: #eef5ec;
-  --muted: #b2bfb0;
-  --lime: #c9f38e;
-  --mint: #9ee7bf;
-  --amber: #ffcc85;
+  color-scheme: light;
+  --bg: #f4f7f2;
+  --surface: #ffffff;
+  --line: #bac9c1;
+  --text: #182d29;
+  --muted: #485f57;
+  --lime: #275c47;
+  --mint: #21604f;
+  --amber: #86450c;
   font-family: "Segoe UI", Arial, sans-serif;
   background: var(--bg);
   color: var(--text);
@@ -152,7 +152,7 @@ p {
 }
 .stage {
   position: relative;
-  background: #0b120e;
+  background: #e2ede7;
 }
 .stage canvas {
   display: block;
@@ -196,7 +196,7 @@ select,
 input:not([type="checkbox"]) {
   border: 1px solid var(--line);
   border-radius: 6px;
-  background: #0f1a14;
+  background: #f9fbf8;
   color: var(--text);
   padding: 8px 10px;
 }
@@ -208,13 +208,13 @@ button:hover {
 }
 button:disabled {
   cursor: not-allowed;
-  color: #96a294;
+  color: #576a60;
 }
 button[aria-pressed="true"],
 .primary {
   background: var(--lime);
   border-color: var(--lime);
-  color: #182415;
+  color: #ffffff;
 }
 .view-tools button {
   font-size: 13px;
@@ -316,7 +316,7 @@ input {
   margin-top: 10px;
   padding: 10px 12px;
   border-left: 2px solid var(--lime);
-  background: #101a14;
+  background: #eaf3eb;
   line-height: 1.5;
   font-size: 14px;
 }
@@ -334,7 +334,7 @@ input {
 .skip:focus {
   left: 4px;
   top: 5px;
-  background: #101915;
+  background: #f4f7f2;
   padding: 12px;
   z-index: 9;
 }
@@ -348,7 +348,7 @@ input {
 .floor {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  background: repeating-linear-gradient(0deg, #112018 0 19px, #233428 20px);
+  background: repeating-linear-gradient(0deg, #e9f1e8 0 19px, #d6e3d6 20px);
   gap: 8px;
   padding: 14px;
   border: 1px solid var(--line);
@@ -443,7 +443,7 @@ input {
   padding: 9px;
   border: 1px solid var(--line);
   border-radius: 7px;
-  background: #111b16;
+  background: #f1f6f0;
 }
 .portpair small {
   display: block;

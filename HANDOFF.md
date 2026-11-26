@@ -4,7 +4,7 @@ Signal Works is a standalone personal academy with eight curriculum tracks, four
 
 ## Maintain the site
 
-The dashboard leads into the interactive 3D server-room exercise. The scene renderer is shared by the dashboard and room workspace. The room guide explains the assumptions and real installation checks. Release checks cover orbit and zoom, equipment placement, port pairing, network commissioning, fault recovery and the small-screen layout.
+The dashboard leads into the shared packing-line workshop in `production.html`. Its seven workstations share a single order record. The machines and controls scripts expose the simulated commissioning tests, PLC execution, operator screens and robot replay used by the line. Keep browser entry scripts compatible with direct local file access. The room renderer uses classic deferred scripts on both the dashboard and room page. A local file test must exercise the inspector and change rendered geometry before publishing.
 
 - Edit the lesson content in `lessons.js`. Progress keys consist of a track ID and lesson index, so append lessons rather than reordering existing entries on a published track.
 - The dashboard lives in `index.html`, `style.css` and `app.js`. The labs and field projects each have a separate HTML, CSS and JavaScript file.

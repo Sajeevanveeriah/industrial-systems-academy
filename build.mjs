@@ -18,6 +18,11 @@ const assets = [
   "room-guide.html",
   "room-guide.css",
   "room-sizing.js",
+  "production.html",
+  "production.css",
+  "production.js",
+  "production-machines.js",
+  "production-controls.js",
 ];
 const output = new URL("./dist/", import.meta.url);
 await mkdir(output, { recursive: true });

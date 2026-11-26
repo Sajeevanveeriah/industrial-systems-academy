@@ -117,21 +117,16 @@ const previewState = {
   powered: true,
 };
 let roomPreview = null;
-let previewGeneration = 0;
 function stopRoomPreview() {
-  previewGeneration++;
   roomPreview?.destroy();
   roomPreview = null;
 }
-async function mountRoomPreview() {
-  const generation = previewGeneration;
+function mountRoomPreview() {
   const canvas = document.querySelector("#room-preview");
   const status = document.querySelector("#preview-status");
   const buttons = [...document.querySelectorAll("[data-preview-camera]")];
   try {
-    const { createRoomView } = await import("./room-view.js");
-    if (generation !== previewGeneration || !canvas.isConnected) return;
-    roomPreview = createRoomView(canvas, () => {});
+    roomPreview = window.SignalRoom.createRoomView(canvas, () => {});
     roomPreview.update(previewState);
     function markView(name) {
       for (const button of buttons) {
@@ -163,7 +158,6 @@ async function mountRoomPreview() {
     status.textContent = "Drag to orbit, or choose a camera.";
     canvas.dataset.ready = "true";
   } catch {
-    if (generation !== previewGeneration || !canvas.isConnected) return;
     stopRoomPreview();
     canvas.hidden = true;
     document.querySelector(".preview-controls").hidden = true;
@@ -185,7 +179,7 @@ function dashboard(toTracks) {
     lessonCount +
     " lessons passed" +
     storageNote() +
-    '</span></div><section class="track-section" id="tracks"><div class="section-head"><div><h2>Learning tracks</h2><p>Start with industrial IT, then follow the tracks in order through to systems integration.</p></div><input class="track-search" type="search" aria-label="Find a learning track" placeholder="Find a track…"></div><div class="grid" id="track-grid"></div><p class="empty" role="status" hidden></p></section>';
+    '</span></div><section class="track-section" id="tracks"><div class="section-head"><div><h2>Learning tracks</h2><p>Study the principles behind each workstation, then apply them on the line.</p><a id="study-link" class="study-link" href="#tracks">Start learning</a></div><input class="track-search" type="search" aria-label="Find a learning track" placeholder="Find a track…"></div><div class="grid" id="track-grid"></div><p class="empty" role="status" hidden></p></section>';
   const hero = document.querySelector("#room-hero").content.cloneNode(true);
   main.prepend(hero);
   const resume = document.querySelector("#study-link");
@@ -285,6 +279,22 @@ function readLesson(t, i) {
       )
       .join("") +
     '</div><p class="feedback" aria-live="polite"></p></section><div class="lesson-next"></div></article></div></section>';
+  const stations = {
+    it: ["servers", "Servers and network"],
+    net: ["servers", "Servers and network"],
+    plc: ["plc", "PLC"],
+    scada: ["scada", "SCADA"],
+    robot: ["robot", "Robot cell"],
+    mes: ["orders", "MES and ERP"],
+    erp: ["orders", "MES and ERP"],
+    systems: ["", "Integrated production workshop"],
+  };
+  const [station, stationTitle] = stations[t.id] || stations.systems;
+  const stationLink = document.createElement("a");
+  stationLink.className = "station-practice";
+  stationLink.href = "production.html" + (station ? "#" + station : "");
+  stationLink.textContent = "Practise in the workshop: " + stationTitle + " →";
+  document.querySelector(".practice").append(stationLink);
   const feedback = document.querySelector(".feedback");
   function showNext() {
     const next = i + 1 < t.lessons.length ? courseLink(t, i + 1) : "#tracks";
@@ -376,6 +386,170 @@ function canvasFrame(canvas, w, h) {
   ctx.lineCap = "round";
   ctx.lineJoin = "round";
   return ctx;
+}
+function drawLine(canvas) {
+  const c = canvasFrame(canvas, 650, 360);
+  if (!c) return;
+  const ink = "#304a43";
+  const iso = ([x, y, z]) => [
+    92 + x * 0.93 + y * 0.68,
+    193 + x * 0.26 - y * 0.43 - z,
+  ];
+  function face(points, colour, stroke = ink, width = 1.3) {
+    c.beginPath();
+    points
+      .map(iso)
+      .forEach(([x, y], i) => (i ? c.lineTo(x, y) : c.moveTo(x, y)));
+    if (colour) {
+      c.closePath();
+      c.fillStyle = colour;
+      c.fill();
+    }
+    if (stroke) {
+      c.strokeStyle = stroke;
+      c.lineWidth = width;
+      c.stroke();
+    }
+  }
+  const line = (a, b, colour = ink, width = 1.2) =>
+    face([a, b], null, colour, width);
+  const steel = ["#c4d3ca", "#92a89b", "#6b8278"];
+  const dark = ["#698279", "#425d53", "#334f47"];
+  const board = ["#dfbb80", "#c89c63", "#a57949"];
+  function box(x, y, z, w, d, h, [top, front, side]) {
+    face(
+      [
+        [x, y, z],
+        [x + w, y, z],
+        [x + w, y, z + h],
+        [x, y, z + h],
+      ],
+      front,
+    );
+    face(
+      [
+        [x + w, y, z],
+        [x + w, y + d, z],
+        [x + w, y + d, z + h],
+        [x + w, y, z + h],
+      ],
+      side,
+    );
+    face(
+      [
+        [x, y, z + h],
+        [x + w, y, z + h],
+        [x + w, y + d, z + h],
+        [x, y + d, z + h],
+      ],
+      top,
+    );
+  }
+  box(-15, -18, -7, 435, 158, 7, ["#e8ecdf", "#bbcab8", "#a0b6a3"]);
+  for (let x = 5; x < 420; x += 25)
+    line([x, -18, 0.4], [x, 140, 0.4], "#c7d2bf", 0.7);
+  for (let y = 2; y < 140; y += 20)
+    line([-15, y, 0.4], [420, y, 0.4], "#c7d2bf", 0.7);
+  // Paired rack enclosures and front-mounted equipment.
+  for (const x of [0, 37]) {
+    box(x, 68, 0, 33, 35, 100, dark);
+    for (let z = 7; z < 96; z += 10) {
+      box(x + 2, 66, z, 29, 2, 7, steel);
+      for (let n = 0; n < 4; n++)
+        line(
+          [x + 4 + n * 3, 65.8, z + 2],
+          [x + 4 + n * 3, 65.8, z + 5],
+          ink,
+          0.9,
+        );
+      line([x + 25, 65.7, z + 3], [x + 28, 65.7, z + 3], "#e2fda3", 1.5);
+    }
+  }
+  box(92, 69, 0, 36, 27, 78, steel);
+  box(98, 67, 45, 15, 2, 11, dark);
+  line([118, 66, 38], [118, 66, 46], ink, 2.2);
+  for (let z = 9; z < 30; z += 4) line([96, 68, z], [117, 68, z], ink, 0.8);
+  // Roller bed with a pair of cartons travelling towards the pallet cell.
+  for (const x of [114, 210, 299])
+    for (const y of [10, 38]) box(x, y, 0, 5, 5, 31, dark);
+  box(102, 6, 30, 215, 40, 7, steel);
+  for (let x = 105; x < 315; x += 6)
+    line([x, 8, 38], [x, 44, 38], "#546e64", 2);
+  for (const x of [155, 208]) {
+    box(x, 13, 39, 24, 22, 18, board);
+    line([x + 12, 13, 57], [x + 12, 35, 57], "#f5ddb1", 3);
+  }
+  // SCADA operator pedestal with a trace visible on the display.
+  box(20, 0, 0, 30, 17, 4, dark);
+  box(32, 5, 4, 6, 7, 38, steel);
+  box(13, 0, 42, 46, 13, 25, steel);
+  box(16, -1, 45, 39, 1, 18, dark);
+  face(
+    [
+      [19, -2, 50],
+      [25, -2, 51],
+      [29, -2, 57],
+      [34, -2, 49],
+      [41, -2, 54],
+      [51, -2, 53],
+    ],
+    null,
+    "#bbec9b",
+    1.6,
+  );
+  box(251, 77, 0, 42, 33, 7, dark);
+  box(256, 82, 7, 32, 23, 16, steel);
+  function arm(a, b, width) {
+    line(a, b, "#36544f", width + 4);
+    line(a, b, "#ce8450", width);
+    line(
+      [a[0], a[1], a[2] + 2],
+      [b[0], b[1], b[2] + 2],
+      "#f9bc77",
+      width * 0.4,
+    );
+  }
+  const joints = [
+    [271, 91, 25],
+    [227, 87, 68],
+    [267, 91, 110],
+    [321, 43, 85],
+  ];
+  for (let i = 0; i < 3; i++) arm(joints[i], joints[i + 1], 12 - i * 1.8);
+  for (const point of joints) {
+    const [x, y] = iso(point);
+    c.beginPath();
+    c.arc(x, y, 6, 0, Math.PI * 2);
+    c.fillStyle = "#446059";
+    c.fill();
+    c.beginPath();
+    c.arc(x, y, 2.6, 0, Math.PI * 2);
+    c.fillStyle = "#bdd2bd";
+    c.fill();
+  }
+  line(joints[3], [321, 43, 72], ink, 4);
+  box(309, 31, 54, 23, 23, 18, board);
+  for (let x = 335; x < 383; x += 9) box(x, 22, 1, 6, 42, 5, board);
+  for (let z = 6; z <= 25; z += 19)
+    for (let x = 337; x < 380; x += 22) box(x, 26, z, 21, 30, 18, board);
+  const labels = [
+    ["SERVER ROOM", [37, 86, 100], 65, 36],
+    ["ROBOT CELL", [267, 91, 110], 420, 43],
+    ["PACKING LINE", [208, 0, 32], 250, 309],
+  ];
+  c.font = "600 10px Consolas,monospace";
+  c.fillStyle = "#354e42";
+  for (const [label, anchor, x, y] of labels) {
+    const [u, v] = iso(anchor);
+    c.beginPath();
+    c.moveTo(u, v);
+    c.lineTo(u, y + 8);
+    c.lineTo(x, y + 8);
+    c.strokeStyle = "#6f8e7a";
+    c.lineWidth = 0.9;
+    c.stroke();
+    c.fillText(label, x, y + 4);
+  }
 }
 function moduleDrawing(canvas, index) {
   const c = canvasFrame(canvas, 235, 85);
@@ -555,6 +729,8 @@ let pendingFrame;
 function scheduleDrawing() {
   cancelAnimationFrame(pendingFrame);
   pendingFrame = requestAnimationFrame(() => {
+    const floor = document.querySelector("#line-preview");
+    if (floor) drawLine(floor);
     document
       .querySelectorAll("canvas[data-track]")
       .forEach((c) => moduleDrawing(c, Number(c.dataset.track)));

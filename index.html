@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <meta name="theme-color" content="#101815" />
+    <meta name="theme-color" content="#f4f6ee" />
     <meta
       name="description"
       content="A practical learning workspace for industrial IT, controls, robotics and enterprise integration."
@@ -15,6 +15,7 @@
     />
     <link rel="stylesheet" href="style.css" />
     <script defer src="lessons.js"></script>
+    <script defer src="room-view.js"></script>
     <script defer src="app.js"></script>
   </head>
   <body>
@@ -37,23 +38,67 @@
       </div>
     </header>
     <template id="room-hero">
-      <section class="hero room-hero" aria-labelledby="hero-title">
+      <section class="hero workshop-hero" aria-labelledby="hero-title">
         <div class="hero-copy">
           <div class="eyebrow">Industrial Systems Academy</div>
-          <h1 id="hero-title">Inside the <br />server room.</h1>
+          <h1 id="hero-title">Commission a<br />production line.</h1>
           <p>
-            Place a rack, mount a server and switch, then trace power and
-            network cables before testing the installation.
+            Bring a packing line online, from the servers and PLC to the
+            operator display, robot cell and production order.
           </p>
           <div class="actions">
-            <a class="btn" href="room.html"
-              >Build a server room <span aria-hidden="true">→</span></a
+            <a class="btn" href="production.html"
+              >Enter the production workshop
+              <span aria-hidden="true">→</span></a
             >
-            <a class="quiet" href="room-guide.html">Build guide</a>
           </div>
-          <a id="study-link" class="study-link" href="#tracks"
-            >Start learning</a
+        </div>
+        <div class="line-visual">
+          <canvas
+            id="line-preview"
+            role="img"
+            aria-label="Packing line with server equipment, control cabinet, operator console, robot and finished cartons"
+          ></canvas>
+        </div>
+      </section>
+      <section class="station-section" aria-labelledby="station-title">
+        <div class="section-head">
+          <div>
+            <h2 id="station-title">Workshop stations</h2>
+            <p>Open a station to work on its part of the same line.</p>
+          </div>
+        </div>
+        <nav class="stations" aria-label="Hands-on workstations">
+          <a href="production.html#servers"
+            ><strong>Servers &amp; network</strong
+            ><span>Prepare the infrastructure</span></a
           >
+          <a href="production.html#plc"
+            ><strong>PLC</strong><span>Sequence the machine</span></a
+          >
+          <a href="production.html#scada"
+            ><strong>SCADA</strong><span>Inspect the process</span></a
+          >
+          <a href="production.html#robot"
+            ><strong>Robot cell</strong><span>Set up the transfer</span></a
+          >
+          <a href="production.html#orders"
+            ><strong>MES &amp; ERP</strong><span>Reconcile the order</span></a
+          >
+        </nav>
+      </section>
+      <section class="room-exhibit" aria-labelledby="exhibit-title">
+        <div class="exhibit-copy">
+          <div class="eyebrow">Infrastructure practical</div>
+          <h2 id="exhibit-title">Inside the server room.</h2>
+          <p>
+            Place the rack, mount the hardware and trace its power and network
+            connections.
+          </p>
+          <div class="actions">
+            <a class="exhibit-link" href="room.html">Build a server room →</a
+            ><a class="quiet" href="room-guide.html">Build guide</a>
+          </div>
         </div>
         <div class="preview-panel">
           <div class="preview-stage">

@@ -2,7 +2,7 @@
 
 [Open the academy](https://industrial-systems-academy.pages.dev/) · [Go straight to the practice bench](https://industrial-systems-academy.pages.dev/labs)
 
-A personal learning site for the engineer responsible for both the server room and the production line. Start by [building a server room](https://industrial-systems-academy.pages.dev/room). Choose a floor location, turn the rack, place equipment, connect ports and commission the historian network. The [setup guide](https://industrial-systems-academy.pages.dev/room-guide) takes the exercise into a site survey, equipment schedule and acceptance checks. Use the learning tracks for the underlying concepts.
+A personal learning site for the engineer responsible for the server room and production line. In the [production workshop](https://industrial-systems-academy.pages.dev/production), release a carton order, configure two application servers, write the PLC permissive, design an operator screen and teach the robot. Inspect the event history to reconcile blank consumption, rejects and finished stock after an interface outage. The [3D server room](https://industrial-systems-academy.pages.dev/room) and [installation guide](https://industrial-systems-academy.pages.dev/room-guide) cover the physical facility.
 
 ## A route through the academy
 
@@ -15,7 +15,7 @@ Quiz progress stays in the current browser profile and origin. It does not sync 
 
 ## Run and publish
 
-The website needs no framework, database or external script at runtime. From the repository root:
+Double-click `index.html`, `room.html` or `production.html` to use the academy directly from a Windows folder. Keep the accompanying scripts and styles in that folder. Workshop state stays within the current browser's storage for that entry point. To serve the release locally over HTTP, run these commands from the repository root:
 
 ```sh
 node build.mjs
@@ -29,3 +29,5 @@ npx wrangler@4.168.0 pages deploy dist --project-name industrial-systems-academy
 ```
 
 This is a direct-upload Pages project. Pushing to GitHub alone does not deploy. Only the browser assets included in the build are published.
+
+The browser regression in `tests/production.cjs` opens the local files by default. With Playwright and its browser available, run `node tests/production.cjs`. Set `QA_BROWSER=msedge` to use installed Edge. Pass the public site URL as the first argument to exercise the same flow on the deployed site.
