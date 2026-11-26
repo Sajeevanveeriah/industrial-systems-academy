@@ -1,0 +1,210 @@
+:root {
+  color-scheme: dark;
+  --ink: #101714;
+  --panel: #19221d;
+  --line: #354139;
+  --text: #f2f3e9;
+  --muted: #b2bcb1;
+  --mint: #c0ed89;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: var(--ink);
+  color: var(--text);
+  font:
+    16px/1.55 Inter,
+    "Segoe UI",
+    Arial,
+    sans-serif;
+}
+a {
+  color: inherit;
+}
+header,
+main,
+footer {
+  max-width: 1180px;
+  margin: auto;
+  padding: 0 clamp(16px, 4vw, 54px);
+}
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  border-bottom: 1px solid var(--line);
+  min-height: 72px;
+}
+header a {
+  text-decoration: none;
+}
+header nav {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.88rem;
+}
+.brand {
+  font-weight: 750;
+  font-size: 1.3rem;
+}
+.brand b {
+  display: inline-grid;
+  place-items: center;
+  background: var(--mint);
+  color: var(--ink);
+  border-radius: 5px;
+  width: 30px;
+  height: 30px;
+}
+.intro {
+  padding: 32px 0 24px;
+}
+.eyebrow,
+small {
+  font:
+    600 0.76rem/1.6 Consolas,
+    monospace;
+  letter-spacing: 0.07em;
+  color: var(--mint);
+}
+h1 {
+  font-size: clamp(2.7rem, 7vw, 5rem);
+  line-height: 1;
+  margin: 0.45rem 0 1rem;
+  letter-spacing: -0.055em;
+}
+h1 span {
+  color: var(--mint);
+}
+.intro > p:last-child,
+article > p {
+  max-width: 68ch;
+  color: var(--muted);
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(190px, 1fr) minmax(0, 3fr);
+  gap: clamp(16px, 3vw, 40px);
+}
+aside {
+  align-self: start;
+}
+aside h2 {
+  font-size: 1rem;
+}
+aside nav {
+  display: grid;
+  gap: 5px;
+}
+aside a {
+  display: block;
+  padding: 10px 12px;
+  text-decoration: none;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+}
+aside a[aria-current] {
+  color: var(--mint);
+  background: var(--panel);
+  border-color: var(--mint);
+}
+article {
+  padding: clamp(16px, 3vw, 32px);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+article h2 {
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
+  line-height: 1.14;
+  letter-spacing: -0.035em;
+  margin: 0.5rem 0;
+}
+article h3 {
+  margin: 1.7rem 0 0.65rem;
+  font-size: 1.1rem;
+}
+li {
+  margin: 0.5rem 0;
+}
+ol {
+  padding-left: 1.4rem;
+}
+pre {
+  background: var(--ink);
+  border-left: 3px solid var(--mint);
+  padding: 13px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font:
+    0.9rem/1.55 Consolas,
+    monospace;
+}
+.criterion {
+  display: flex;
+  gap: 10px;
+  padding: 7px 0;
+  align-items: baseline;
+}
+.criterion input {
+  accent-color: var(--mint);
+}
+textarea {
+  background: var(--ink);
+  border: 1px solid #77857a;
+  border-radius: 5px;
+  width: 100%;
+  min-height: 96px;
+  margin: 6px 0;
+  padding: 10px;
+  color: var(--text);
+  font: inherit;
+  resize: vertical;
+}
+.note,
+.state {
+  font-size: 0.86rem;
+  color: var(--muted);
+}
+footer {
+  padding-top: 30px;
+  padding-bottom: 30px;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+.skip {
+  position: absolute;
+  left: -9999px;
+}
+.skip:focus {
+  left: 10px;
+  background: var(--ink);
+}
+:focus-visible {
+  outline: 3px solid #eec88f;
+  outline-offset: 3px;
+}
+@media (max-width: 700px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+  aside nav {
+    grid-template-columns: 1fr 1fr;
+    font-size: 0.88rem;
+  }
+  .intro {
+    padding: 20px 0 8px;
+  }
+  header {
+    min-height: 62px;
+  }
+  .brand {
+    font-size: 1.1rem;
+  }
+  header nav {
+    gap: 0.65rem;
+  }
+}

@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en-AU">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#101d1b" />
+    <title>Practice bench | Signal Works</title>
+    <link rel="stylesheet" href="labs.css" />
+    <script defer src="labs.js"></script>
+  </head>
+  <body>
+    <a href="#main" class="skip">Skip to bench</a>
+    <header>
+      <div class="wrap mast">
+        <a class="brand" href="index.html"
+          ><i aria-hidden="true">∿</i> Signal Works</a
+        ><a class="back" href="index.html">← Learning dashboard</a>
+      </div>
+    </header>
+    <main id="main" class="wrap">
+      <div class="intro">
+        <span class="eyebrow">INDUSTRIAL SYSTEMS ACADEMY / LABS</span>
+        <h1>Practice bench<span>.</span></h1>
+        <p>
+          Change one condition, run the test and trace the result. These
+          simulations run in your browser, without connecting to plant
+          equipment.
+        </p>
+      </div>
+      <nav class="benches" aria-label="Choose a lab">
+        <button data-lab="server">Server commissioning</button
+        ><button data-lab="plc">PLC sequence</button
+        ><button data-lab="robot">Robot teach pendant</button
+        ><button data-lab="order">Order to pallet</button>
+      </nav>
+      <section id="bench" aria-label="Active practice bench"></section>
+    </main>
+    <footer class="wrap">
+      Signal Works <span>Industrial Systems Academy</span>
+    </footer>
+  </body>
+</html>
