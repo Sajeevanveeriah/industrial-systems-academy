@@ -682,3 +682,112 @@ footer > span:first-child {
     display: none;
   }
 }
+.room-hero {
+  grid-template-columns: minmax(0, 0.87fr) minmax(0, 1.35fr);
+}
+.room-hero h1 {
+  font-size: clamp(44px, 5.3vw, 78px);
+}
+.preview-panel {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: #141f22;
+  border-left: 1px solid var(--line);
+}
+.preview-stage {
+  position: relative;
+  flex: 1;
+  min-height: 325px;
+}
+.preview-stage canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  touch-action: pan-y;
+}
+.preview-stage canvas[hidden],
+.preview-controls[hidden] {
+  display: none;
+}
+.preview-stage canvas:focus-visible {
+  outline: 3px solid var(--lime);
+  outline-offset: -4px;
+}
+.preview-strip {
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  background: #192522;
+  border-top: 1px solid var(--line);
+}
+.preview-strip p {
+  font-size: 12px;
+  line-height: 1.4;
+  color: #c6d2c8;
+}
+.preview-controls {
+  display: flex;
+  gap: 3px;
+}
+.preview-controls button {
+  min-height: 40px;
+  padding: 6px 10px;
+  border-radius: 5px;
+  border: 1px solid #526351;
+  background: #202c25;
+  color: var(--paper);
+  font: 600 12px var(--mono);
+}
+.preview-controls button[aria-pressed="true"] {
+  color: var(--ink);
+  background: var(--lime);
+}
+.study-link {
+  display: inline-block;
+  margin-top: 16px;
+  padding: 3px 0;
+  color: var(--muted);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  font-size: 14px;
+}
+@media (max-width: 800px) {
+  .room-hero {
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  }
+  .preview-strip {
+    flex-wrap: wrap;
+  }
+  .preview-stage {
+    min-height: 280px;
+  }
+}
+@media (max-width: 620px) {
+  .room-hero {
+    grid-template-columns: 1fr;
+  }
+  .preview-panel {
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+  .preview-stage {
+    min-height: 235px;
+  }
+  .room-hero .hero-copy {
+    padding: 20px;
+  }
+  .room-hero h1 {
+    font-size: 44px;
+  }
+  .room-hero h1 br {
+    display: none;
+  }
+  .room-hero .study-link {
+    margin-top: 9px;
+  }
+}

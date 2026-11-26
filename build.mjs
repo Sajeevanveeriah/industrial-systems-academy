@@ -11,6 +11,13 @@ const assets = [
   "fieldwork.html",
   "fieldwork.js",
   "fieldwork.css",
+  "room.html",
+  "room.js",
+  "room.css",
+  "room-view.js",
+  "room-guide.html",
+  "room-guide.css",
+  "room-sizing.js",
 ];
 const output = new URL("./dist/", import.meta.url);
 await mkdir(output, { recursive: true });

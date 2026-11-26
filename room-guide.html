@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="en-AU">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Survey, size, assemble and commission a small industrial server room, with a worked rack elevation and acceptance tests."
+    />
+    <title>Small server room field guide | Signal Works</title>
+    <link rel="stylesheet" href="room-guide.css" />
+    <script defer src="room-sizing.js"></script>
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to field guide</a>
+    <header>
+      <div>
+        <a class="brand" href="index.html"
+          ><b aria-hidden="true">∿</b> Signal Works.</a
+        ><a href="room.html">Room simulator ↗</a>
+      </div>
+    </header>
+    <main id="main">
+      <div class="hero">
+        <p class="eyebrow">Industrial infrastructure / Field guide</p>
+        <h1>Build a small<br />server room.</h1>
+        <p>
+          Follow one service bay from an empty room to an operating historian.
+          At each stage, distinguish what a drawing predicts from what an
+          installed system actually proves.
+        </p>
+        <a class="action" href="room.html"
+          >Open the room simulator <span aria-hidden="true">→</span></a
+        >
+      </div>
+      <nav aria-label="Guide sections">
+        <a href="#survey">Survey</a><a href="#size">Size</a
+        ><a href="#rack">Rack</a><a href="#patch">Connect</a
+        ><a href="#services">Configure</a><a href="#accept">Accept</a
+        ><a href="#operate">Maintain</a>
+      </nav>
+      <section id="survey">
+        <p class="eyebrow">Before equipment arrives</p>
+        <h2>Survey the service bay</h2>
+        <div class="two">
+          <article>
+            <h3>Ask what must survive</h3>
+            <p>
+              Agree with operations which services must run during a short
+              outage, which can shut down, how much history can be lost and who
+              can accept an interruption. Record the upstream dependencies: a
+              local server staying on does not keep an unprotected upstream
+              switch alive.
+            </p>
+          </article>
+          <article>
+            <h3>Measure the room, not just the rack</h3>
+            <p>
+              Record door and delivery-route dimensions, rack depth including
+              connectors, service access at both ends, floor capacity, water and
+              dust exposure, cooling supply and return, access control and
+              after-hours alarm ownership. Obtain the rail, loading and
+              clearance limits for each selected device.
+            </p>
+          </article>
+        </div>
+        <p class="evidence">
+          <strong>Release gate</strong> Keep a dimensioned plan, dependency
+          list, asset schedule and agreed constraints. Facilities and qualified
+          trades own structural suitability, fixed wiring, protective devices,
+          earthing, fire protection and cooling installation. Resolve gaps
+          before equipment is energised.
+        </p>
+      </section>
+      <section id="size">
+        <p class="eyebrow">Worked design</p>
+        <h2>Size for power, heat and time</h2>
+        <p>
+          The following loads and margin are training assumptions, not equipment
+          ratings. For a real build, record measured peak W and VA at
+          representative load, planned additions, start-up behaviour and
+          manufacturer limits. A dual-supply server is one load, not two copies
+          of its nameplate capacity.
+        </p>
+        <div class="math">
+          <div>
+            <small>Peak IT load</small><strong>600 W</strong
+            ><span
+              >Host 460 W + switch 100 W + edge device 40 W. Assume all are
+              in-room loads.</span
+            >
+          </div>
+          <div>
+            <small>Design load</small><strong>750 W</strong
+            ><span
+              >600 W × 1.25. At a conservative aggregate power factor of 0.90,
+              allow about 834 VA (750 / 0.90, rounded up).</span
+            >
+          </div>
+          <div>
+            <small>IT heat at design load</small><strong>2,559 BTU/h</strong
+            ><span
+              >750 W × 3.412. Add UPS losses and other room heat; account
+              separately for loads powered here but dissipating heat
+              elsewhere.</span
+            >
+          </div>
+        </div>
+        <h3>Read the runtime curve</h3>
+        <p>
+          For comparison, Eaton’s base <strong>5PX1500IRT2UAUG2</strong> row is
+          for a 1,500 W unit. The
+          <a
+            href="https://www.eaton.com/content/dam/eaton/products/backup-power-ups-surge-it-power-distribution/backup-power-ups/eaton-5px-g2-ups/eaton-5pxg2-runtime-chart-en-gb-anz.pdf"
+            >AU/NZ runtime chart</a
+          >
+          lists 14 minutes at 50% and 11 minutes at 60% for its stated VA = W
+          load condition. The 750 W design point is 50% of rated watts. A
+          non-unity power factor is not the chart condition: confirm both output
+          ratings and obtain manufacturer expectations for the real load and
+          battery configuration.
+        </p>
+        <p class="evidence">
+          <strong>Decision</strong> If the example needs 5 minutes to ride
+          through an interruption and 4 minutes to shut down, the 14-minute
+          chart point suggests 5 minutes of nominal margin, not a guarantee.
+          Agree a reserve for battery age and temperature. Witness an approved
+          non-production runtime test under representative load; retain load,
+          battery condition, timing and shutdown logs. The browser models an
+          outage event only.
+        </p>
+        <form
+          id="sizing-sheet"
+          class="sizing-sheet"
+          aria-labelledby="sizing-title"
+        >
+          <h3 id="sizing-title">Size your own load</h3>
+          <p>
+            Change the equipment loads and planning assumptions. To compare the
+            worked example with the published half-load battery figure, change
+            the power factor to 1.
+          </p>
+          <div class="sizing-fields">
+            <label
+              >Host (W)<input
+                name="host"
+                type="number"
+                value="460"
+                min="0"
+                step="any"
+                required
+            /></label>
+            <label
+              >Switch (W)<input
+                name="switchLoad"
+                type="number"
+                value="100"
+                min="0"
+                step="any"
+                required
+            /></label>
+            <label
+              >Other in-room load (W)<input
+                name="other"
+                type="number"
+                value="40"
+                min="0"
+                step="any"
+                required
+            /></label>
+            <label
+              >Growth allowance (%)<input
+                name="growth"
+                type="number"
+                value="25"
+                min="0"
+                step="any"
+                required
+            /></label>
+            <label
+              >Aggregate power factor<input
+                name="factor"
+                type="number"
+                value="0.90"
+                min="0"
+                max="1"
+                step="any"
+                required
+            /></label>
+          </div>
+          <div class="sizing-results" aria-live="polite" aria-atomic="true">
+            <p id="sizing-error" hidden></p>
+            <dl id="sizing-figures">
+              <div>
+                <dt>Peak IT load</dt>
+                <dd id="sizing-peak">600 W</dd>
+              </div>
+              <div>
+                <dt>Design load</dt>
+                <dd id="sizing-design">750 W</dd>
+              </div>
+              <div>
+                <dt>Required capacity</dt>
+                <dd id="sizing-va">834 VA</dd>
+              </div>
+              <div>
+                <dt>IT heat at design load</dt>
+                <dd id="sizing-heat">2,559 BTU/h</dd>
+              </div>
+            </dl>
+            <p id="sizing-runtime"></p>
+          </div>
+          <button type="reset">Restore worked example</button>
+          <noscript
+            ><p>
+              Enable JavaScript to recalculate the worksheet. The initial values
+              show the worked example.
+            </p></noscript
+          >
+        </form>
+      </section>
+      <section id="rack">
+        <p class="eyebrow">Physical installation</p>
+        <h2>Plan a 12U elevation</h2>
+        <div class="layout">
+          <figure class="rack">
+            <figcaption>R01 · Front elevation</figcaption>
+            <div><b>U12</b><span>Patch panel · P01 upstream</span></div>
+            <div><b>U11</b><span>Cable manager</span></div>
+            <div><b>U10</b><span>SW01 · access switch</span></div>
+            <div><b>U09</b><span>Edge network appliance</span></div>
+            <div class="blank">
+              <b>U05–08</b><span>Blanking panels · future capacity</span>
+            </div>
+            <div><b>U03–04</b><span>SRV01 · compute host</span></div>
+            <div class="ups">
+              <b>U01–02</b><span>UPS01 · lowest position</span>
+            </div>
+          </figure>
+          <div>
+            <h3>Start at the floor</h3>
+            <p>
+              This is one arrangement, not a universal equipment list. Start at
+              U1: trained installers secure the cabinet and use the correct
+              rated rails and lifting arrangements for the heaviest unit, then
+              fit the host above it. Confirm that the actual chassis, rails and
+              vertical power distribution unit (PDU) fit with the doors shut.
+            </p>
+            <h3>Follow the air</h3>
+            <p>
+              Place the rack intake towards the cold aisle in the service bay
+              and exhaust towards the return. Check each appliance’s fan
+              direction rather than assuming every switch draws air through its
+              front. Close unused front spaces with blanks; keep cables clear of
+              fans. Trend intake temperatures at bottom, middle and top during
+              representative peak operation, comparing each with its installed
+              device limit.
+            </p>
+          </div>
+        </div>
+      </section>
+      <section id="patch">
+        <p class="eyebrow">Trace a complete path</p>
+        <h2>Connect and label both ends</h2>
+        <div class="two">
+          <article>
+            <h3>Power path</h3>
+            <p class="path">
+              Approved supply → UPS01 → rack PDU → SRV01 and SW01
+            </p>
+            <p>
+              In the simulator the PDU’s server and switch leads are already
+              connected. In the room, record the source, outlet and device inlet
+              at both ends of every lead. Example:
+              <code>R01-PDU01-03 / SRV01-PSU1</code>. If both power supplies
+              share this UPS, record the common failure point. Two cords do not
+              establish independent feeds.
+            </p>
+          </article>
+          <article>
+            <h3>Data path</h3>
+            <p class="path">
+              Upstream termination P01 → switch uplink → access port → SRV01
+            </p>
+            <p>
+              The patch panel is passive. Patch its P01 front jack to the switch
+              uplink; record where the permanent link behind P01 terminates.
+              Connect a distinct switch access port to the server NIC. Record
+              both port IDs, media, transceiver compatibility and cable test
+              result. Label both ends; do not infer purpose from colour.
+            </p>
+          </article>
+        </div>
+        <p class="evidence">
+          <strong>Acceptance</strong> Match the installed port map to the
+          elevation and asset labels. At both ends verify the agreed link speed,
+          VLAN carriage and error-counter baseline. A link light proves neither
+          the VLAN nor a working application.
+        </p>
+      </section>
+      <section id="services">
+        <p class="eyebrow">From metal to application</p>
+        <h2>Configure the host and its services</h2>
+        <p class="path">
+          Training host: 10.42.8.20/24 · Gateway: 10.42.8.1 · DNS: 10.42.8.10 ·
+          Access VLAN: 42
+        </p>
+        <ol>
+          <li>
+            <strong>Network.</strong> Reserve the address and record the MAC and
+            switch port. For this untagged server interface, assign access VLAN
+            42; ensure the upstream link carries VLAN 42 in the agreed mode at
+            both ends. Apply the /24 prefix, gateway and internal resolver.
+            Confirm the expected record using the configured resolver, then test
+            a permitted application session across the intended boundary. A VLAN
+            is not an access rule.
+          </li>
+          <li>
+            <strong>Host.</strong> Capture firmware and storage configuration,
+            usable capacity, network bindings, management access and clock
+            source. Set boot and service restart behaviour deliberately.
+            Restrict management to named administrators on the approved
+            management path. Keep the recovery account under the site’s
+            credential process.
+          </li>
+          <li>
+            <strong>Virtual machines.</strong> Map roles before assigning CPU,
+            memory or disk: directory/DNS provides identity and names; SCADA
+            supervises the process; the historian records time-series data.
+            Avoid making the host’s only recovery procedure depend on a guest it
+            cannot start. Keep backups in a separate failure domain. A single
+            host remains a single point of failure across all its guests.
+          </li>
+          <li>
+            <strong>Bring-up.</strong> Restore network, name and time
+            dependencies first, then databases and dependent applications. From
+            an operator client, resolve the service name and read back a
+            timestamped, good-quality test point. Record clock offset against
+            the agreed tolerance and verify an unauthorised test role does not
+            have write access.
+          </li>
+        </ol>
+      </section>
+      <section id="accept">
+        <p class="eyebrow">Commissioning dossier</p>
+        <h2>Prove the installed result</h2>
+        <p>
+          A factory acceptance test (FAT) proves the prepared build on a bench.
+          A site acceptance test (SAT) proves the installed path. Record the
+          configuration revision, witness, timestamp, actual result and evidence
+          for each. An unrun test is open, not passed.
+        </p>
+        <div class="tests">
+          <article>
+            <h3>FAT / Normal boot</h3>
+            <p>
+              Start the isolated build from its documented state. Pass if the
+              intended service name resolves and the operator account reads the
+              known test point after a restart. Keep the DNS result and
+              application readback.
+            </p>
+          </article>
+          <article>
+            <h3>SAT / End-to-end event</h3>
+            <p>
+              Use an approved test point on the installed path. Pass if its
+              value, quality, source time and identity agree at SCADA and in
+              historical readback. Keep evidence from both ends and the as-built
+              port schedule.
+            </p>
+          </article>
+          <article>
+            <h3>SAT / Degraded service</h3>
+            <p>
+              In an approved test window or isolated test rig, use the
+              manufacturer’s supported test procedure. Confirm monitored battery
+              mode, operator notification and agreed service behaviour. Do not
+              improvise a mains interruption. Keep event and acknowledgement
+              times and any qualified witness report.
+            </p>
+          </article>
+          <article>
+            <h3>Restore / Business service</h3>
+            <p>
+              Example acceptance targets: restore within 60 minutes and lose no
+              more than 15 minutes of data. Restore an independent copy onto an
+              isolated network. Time to a successful historical query is the
+              recovery time; the gap to the newest recovered sample measures
+              data loss. Record both, not just “VM booted”.
+            </p>
+          </article>
+        </div>
+      </section>
+      <section id="operate">
+        <p class="eyebrow">Handover</p>
+        <h2>Leave the room maintainable</h2>
+        <p>
+          Give the owner the elevation, physical and logical diagrams, asset and
+          software revisions, power and port schedules, backups, restore
+          procedure and signed evidence. Record unresolved deviations with an
+          owner and a retest criterion.
+        </p>
+        <details open>
+          <summary>What should be monitored?</summary>
+          <p>
+            Trend intake temperature, UPS load and battery health, disk
+            headroom, storage faults, link errors, time drift, application
+            freshness and backup age. Give each alert an owner and escalation
+            path; demonstrate one notification reaches a person through a
+            channel that survives the fault.
+          </p>
+        </details>
+        <details>
+          <summary>What does a maintenance cycle include?</summary>
+          <p>
+            Agree risk-based intervals and named owners. Review trends and
+            capacity; exercise a restore; check alert routing; review access;
+            stage supported updates in an isolated copy; keep a rollback and
+            retest plan. Follow device instructions for battery inspection and
+            replacement. Update diagrams and recovery records after every
+            relevant change.
+          </p>
+        </details>
+        <a class="action" href="room.html"
+          >Practise the room build <span aria-hidden="true">→</span></a
+        >
+      </section>
+      <aside>
+        <h2>Design references</h2>
+        <p>
+          Primary sources read 26 November 2026. The worked loads, network plan
+          and acceptance targets above are scenario choices.
+        </p>
+        <ul>
+          <li>
+            <a
+              href="https://www.eaton.com/us/en-us/products/backup-power-ups-surge-it-power-distribution/backup-power-ups/ups-sizing-guide.html"
+              >Eaton: UPS sizing</a
+            >
+            and the model-specific runtime chart in the worked example.
+          </li>
+          <li>
+            <a
+              href="https://www.se.com/uk/en/download/document/SPD_NRAN-5TE6HE_EN/"
+              >Schneider Electric: calculating total cooling requirements</a
+            >.
+          </li>
+          <li>
+            <a
+              href="https://i.dell.com/sites/content/business/solutions/whitepapers/en/Documents/air-cooling-basics-07012010.pdf"
+              >Dell: air cooling basics</a
+            >
+            and
+            <a
+              href="https://www.dell.com/support/manuals/en-us/poweredge-vrtx/vrtxownersmanualpub/safety-instructions?guid=guid-28e080f2-091e-48eb-9c30-8da26fab90f9&amp;lang=en-us"
+              >rack stability guidance</a
+            >.
+          </li>
+          <li>
+            <a href="https://csrc.nist.gov/pubs/sp/800/82/r3/final"
+              >NIST: Guide to Operational Technology Security</a
+            >
+            for segmentation, access and recovery planning.
+          </li>
+        </ul>
+      </aside>
+    </main>
+    <footer>Signal Works / Industrial Systems Academy</footer>
+  </body>
+</html>

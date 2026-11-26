@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en-AU">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#111b17" />
+    <title>Server room commissioning | Signal Works</title>
+    <link rel="stylesheet" href="room.css" />
+    <script type="module" src="room.js"></script>
+  </head>
+  <body>
+    <a class="skip" href="#workspace">Skip to simulator</a>
+    <header>
+      <div class="frame bar">
+        <a class="brand" href="index.html"
+          ><span aria-hidden="true">∿</span> Signal Works.</a
+        >
+        <nav aria-label="Academy">
+          <a href="room-guide.html">Room field guide</a
+          ><a href="index.html">Academy home ↗</a>
+        </nav>
+      </div>
+    </header>
+    <main class="frame" id="workspace">
+      <div class="intro">
+        <div>
+          <p class="kicker">FIELD SIMULATOR / INDUSTRIAL IT</p>
+          <h1>Server room commissioning<span>.</span></h1>
+          <p>
+            Site the cabinet, fit a 12U rack, patch the services and prove
+            recovery. Use the inspector to work through the build.
+          </p>
+        </div>
+        <a class="guide" href="room-guide.html">Open field guide ↗</a>
+      </div>
+      <div class="workspace">
+        <section class="viewport" aria-labelledby="view-title">
+          <div class="view-top">
+            <h2 id="view-title">Room viewport</h2>
+            <span class="live"><i></i> Local simulation</span>
+          </div>
+          <div class="stage">
+            <canvas
+              id="room-view"
+              aria-label="Interactive server room model. Use the inspector to make the same selections without the 3D view."
+            ></canvas>
+            <div id="view-fallback" hidden>
+              3D view unavailable. The inspector and test controls remain
+              available.
+            </div>
+          </div>
+          <div class="view-tools">
+            <div role="group" aria-label="Camera preset">
+              <button type="button" data-camera="room" aria-pressed="true">
+                Room</button
+              ><button type="button" data-camera="rack" aria-pressed="false">
+                Rack</button
+              ><button type="button" data-camera="rear" aria-pressed="false">
+                Rear
+              </button>
+            </div>
+            <span id="picked">Room overview</span>
+          </div>
+          <div class="summary" id="readout"></div>
+          <details class="basis">
+            <summary>Commissioning brief and design assumptions</summary>
+            <p>
+              Work order SW-042: commission a single historian on the plant
+              services network. Use the service bay; preserve the doorway and
+              the cooler service zone. Point the rack intake towards the cold
+              aisle. In this training design the UPS occupies U1 and U2. The
+              other devices may use any non-overlapping free spaces.
+            </p>
+            <p>
+              The PDU already feeds the server and switch; the UPS input has a
+              utility feed. Patch P01 is already terminated to the upstream
+              distribution switch. You need to connect the three remaining
+              leads. The primary server interface is reserved as 10.42.8.20/24;
+              use gateway 10.42.8.1, DNS 10.42.8.10 and access VLAN 42.
+            </p>
+            <p>
+              The utility fault removes only the rack’s utility feed. The
+              upstream distribution switch has independent power. The model
+              observes a charged UPS at one instant; it does not simulate
+              elapsed time, battery depletion or endurance. A pass verifies only
+              this fictional configuration, not a physical room, electrical
+              installation or UPS runtime.
+            </p>
+          </details>
+        </section>
+        <section class="inspector" aria-label="Commissioning inspector">
+          <p class="kicker">WORK ORDER / SW-042</p>
+          <h2>Commissioning inspector</h2>
+          <nav id="steps" aria-label="Commissioning stages"></nav>
+          <div id="panel"></div>
+          <div id="notice" role="status" aria-live="polite"></div>
+        </section>
+      </div>
+      <div class="bottom">
+        <span id="storage">Saved on this browser</span
+        ><button id="reset" type="button">Reset work order</button>
+      </div>
+    </main>
+  </body>
+</html>

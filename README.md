@@ -2,7 +2,7 @@
 
 [Open the academy](https://industrial-systems-academy.pages.dev/) · [Go straight to the practice bench](https://industrial-systems-academy.pages.dev/labs)
 
-A personal learning site for the engineer responsible for both the server room and the production line. Start with **Start learning**, or search the dashboard for a system you already work with. Each lesson includes a worked example, a practical exercise, an official reference and a knowledge check with an explanation.
+A personal learning site for the engineer responsible for both the server room and the production line. Start by [building a server room](https://industrial-systems-academy.pages.dev/room). Choose a floor location, turn the rack, place equipment, connect ports and commission the historian network. The [setup guide](https://industrial-systems-academy.pages.dev/room-guide) takes the exercise into a site survey, equipment schedule and acceptance checks. Use the learning tracks for the underlying concepts.
 
 ## A route through the academy
 

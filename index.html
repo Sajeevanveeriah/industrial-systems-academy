@@ -36,6 +36,54 @@
         <span class="local-status"><i></i> Personal workspace</span>
       </div>
     </header>
+    <template id="room-hero">
+      <section class="hero room-hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <div class="eyebrow">Industrial Systems Academy</div>
+          <h1 id="hero-title">Inside the <br />server room.</h1>
+          <p>
+            Place a rack, mount a server and switch, then trace power and
+            network cables before testing the installation.
+          </p>
+          <div class="actions">
+            <a class="btn" href="room.html"
+              >Build a server room <span aria-hidden="true">→</span></a
+            >
+            <a class="quiet" href="room-guide.html">Build guide</a>
+          </div>
+          <a id="study-link" class="study-link" href="#tracks"
+            >Start learning</a
+          >
+        </div>
+        <div class="preview-panel">
+          <div class="preview-stage">
+            <canvas
+              id="room-preview"
+              tabindex="0"
+              aria-label="Interactive server room preview. Press 1 for the room, 2 for the rack front or 3 for the rear."
+            ></canvas>
+          </div>
+          <div class="preview-strip">
+            <p id="preview-status" role="status">Loading the room preview…</p>
+            <div
+              class="preview-controls"
+              role="group"
+              aria-label="Preview camera"
+            >
+              <button type="button" data-preview-camera="room" disabled>
+                Room
+              </button>
+              <button type="button" data-preview-camera="rack" disabled>
+                Front
+              </button>
+              <button type="button" data-preview-camera="rear" disabled>
+                Rear
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </template>
     <main id="main" tabindex="-1"></main>
     <footer>
       <span>Signal Works<span class="brand-dot">.</span></span
