@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Production workshop | Signal Works</title>
     <link rel="stylesheet" href="production.css" />
+    <link rel="stylesheet" href="line-workspace.css" />
+    <script defer src="line-scene.js"></script>
+    <script defer src="line-sequence.js"></script>
+    <script defer src="line-workspace.js"></script>
+    <script defer src="sap-practice.js"></script>
     <script defer src="production-machines.js"></script>
     <script defer src="production-controls.js"></script>
     <script defer src="production.js"></script>
@@ -12,8 +17,11 @@
   <body>
     <a class="skip" href="#station">Skip to workstation</a>
     <header>
-      <a href="index.html" class="wordmark">∿ Signal Works</a
-      ><a href="room.html">3D server room ↗</a>
+      <a href="index.html" class="wordmark">∿ Signal Works</a>
+      <nav aria-label="Practical guides">
+        <a href="equipment.html">Hardware &amp; software</a> ·
+        <a href="room.html">3D server room</a>
+      </nav>
     </header>
     <main>
       <div class="intro">
@@ -31,10 +39,12 @@
       <nav aria-label="Workstations" id="stations">
         <a href="#orders">Order desk</a
         ><a href="#servers">Server configuration</a
-        ><a href="#plc">PLC programming</a><a href="#scada">SCADA designer</a
-        ><a href="#robot">Robot cell</a><a href="#line">Run the line</a
-        ><a href="#trace">Trace &amp; reconcile</a>
+        ><a href="#plc">PLC permissives</a
+        ><a href="#sequence">Sequence editor</a
+        ><a href="#scada">SCADA designer</a><a href="#robot">Robot cell</a
+        ><a href="#line">3D line</a><a href="#trace">Trace &amp; reconcile</a>
       </nav>
+      <div id="bench-mode"></div>
       <div class="rail" id="rail" aria-label="Commissioning status"></div>
       <section
         id="station"

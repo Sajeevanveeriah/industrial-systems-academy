@@ -1,12 +1,17 @@
 (() => {
   "use strict";
-  const key = "signalworks.production.v1";
+  const referenceMode =
+    new URLSearchParams(location.search).get("bench") === "reference";
+  const key = referenceMode
+    ? "signalworks.reference-line.v1"
+    : "signalworks.production.v1";
   const $ = (id) => document.getElementById(id);
   const root = $("station");
   const stations = [
     "orders",
     "servers",
     "plc",
+    "sequence",
     "scada",
     "robot",
     "line",
@@ -44,10 +49,95 @@
     quality: "Pass",
     interfaceOnline: true,
   });
-  let state = fresh();
+  function referenceLine() {
+    const state = fresh();
+    const host = {
+      prefix: "24",
+      gateway: "10.42.8.1",
+      dns: "10.42.8.10",
+      bind: "Service NIC",
+    };
+    state.servers = {
+      ready: true,
+      checked: true,
+      historian: {
+        ...host,
+        name: "hist-01",
+        ip: "10.42.8.21",
+        service: "History collector",
+        port: "4841",
+        grant: "Append samples",
+        days: "30",
+      },
+      mes: {
+        ...host,
+        name: "mes-01",
+        ip: "10.42.8.22",
+        service: "Production API",
+        port: "8443",
+        grant: "Post completions",
+        backup: "Independent repository",
+        interval: "15",
+      },
+    };
+    const permissive = "RUN := GUARD AND PART AND AUTO;";
+    state.plc = { source: permissive, compiled: permissive, proven: true };
+    state.sequence = window.SWSequence.reference();
+    state.scada = {
+      verified: true,
+      widgets: [
+        { position: 1, title: "Cell running", type: "lamp", tag: "lastRun" },
+        {
+          position: 2,
+          title: "MES good cartons",
+          type: "count",
+          tag: "order.good",
+        },
+        {
+          position: 3,
+          title: "At inspection camera",
+          type: "lamp",
+          tag: "cell.atCamera",
+        },
+        {
+          position: 4,
+          title: "ERP finished stock",
+          type: "count",
+          tag: "erp.finished",
+        },
+        {
+          position: 5,
+          title: "Cartons rejected",
+          type: "count",
+          tag: "order.rejects",
+        },
+      ],
+    };
+    const pick = { shoulder: 12, elbow: 45 },
+      place = { shoulder: 125, elbow: 35 };
+    state.robot = {
+      ready: true,
+      goodTest: true,
+      rejectTest: true,
+      jog: { ...pick },
+      pick,
+      place,
+    };
+    Object.assign(state.order, { status: "Running", route: "CTN-06" });
+    state.order.history.push({
+      system: "Reference setup",
+      action:
+        "Example released and dispatched to PK-01 with preconfigured hardware, PLC logic and operator screen.",
+    });
+    return state;
+  }
+  let state = referenceMode ? referenceLine() : fresh();
   let writable = true;
+  let savedVersion = null;
+  let stale = false;
   try {
-    const data = JSON.parse(localStorage.getItem(key));
+    savedVersion = localStorage.getItem(key);
+    const data = JSON.parse(savedVersion);
     if (
       data?.order &&
       Array.isArray(data.order.events) &&
@@ -73,6 +163,14 @@
   const allOrders = () => [...state.archive, state.order];
   const movementRows = (o) => o.events.filter((e) => o.posted.includes(e.id));
   const used = () => allOrders().reduce((sum, o) => sum + o.events.length, 0);
+  function physicalBlanks() {
+    const c = state.carton;
+    const inCell =
+      c &&
+      c.orderId === state.order.id &&
+      !state.order.events.some((e) => e.id === c.id);
+    return initial() - used() - Number(Boolean(inCell));
+  }
   const postedRaw = () =>
     allOrders().reduce((sum, o) => sum + movementRows(o).length, 0);
   const finished = (sku) =>
@@ -118,6 +216,7 @@
           controls.evaluatePLC(state, { guard: true, part: true, auto: true })
             .run,
       ],
+      ["Sequence", window.SWSequence.ready(state)],
       ["SCADA", controls.scadaReady(state)],
       ["Robot", machines.robotReady(state)],
     ];
@@ -137,8 +236,15 @@
       .join("");
   }
   function save() {
+    if (stale) return;
     try {
-      localStorage.setItem(key, JSON.stringify(state));
+      if (localStorage.getItem(key) !== savedVersion) {
+        suspendStaleTab();
+        return;
+      }
+      const version = JSON.stringify(state);
+      localStorage.setItem(key, version);
+      savedVersion = version;
     } catch {
       writable = false;
     }
@@ -147,6 +253,31 @@
       : "Storage unavailable. Keep this tab open to retain the current exercise.";
     status();
   }
+  function suspendStaleTab() {
+    if (stale) return;
+    stale = true;
+    activeLine?.destroy();
+    activeLine = null;
+    root.inert = true;
+    const notice = $("storage");
+    notice.replaceChildren(
+      document.createTextNode(
+        "Another tab saved this workspace. This tab has paused. ",
+      ),
+    );
+    const reload = document.createElement("button");
+    reload.textContent = "Load latest work";
+    reload.onclick = () => location.reload();
+    notice.append(reload);
+    notice.scrollIntoView({ block: "center" });
+  }
+  window.addEventListener("storage", (event) => {
+    if (
+      (event.key === key || event.key === null) &&
+      localStorage.getItem(key) !== savedVersion
+    )
+      suspendStaleTab();
+  });
   function log(text) {
     state.journal.push({
       order: state.order.id,
@@ -224,7 +355,7 @@
       "<p>Opening stores balance for this exercise is 12 blanks. The inventory ledger updates when manufacturing events reach ERP.</p>" +
       facts([
         ["ERP blanks", initial() - postedRaw()],
-        ["Physical blanks", initial() - used()],
+        ["Physical blanks", physicalBlanks()],
         ["ERP finished · " + o.sku, finished(o.sku)],
       ]) +
       '<div class="actions">' +
@@ -247,50 +378,10 @@
       '<h3>Commission the four workstations</h3><div class="actions">' +
       nav("servers", "Configure servers") +
       nav("plc", "Program controller") +
+      nav("sequence", "Write the carton sequence") +
       nav("scada", "Build operator screen") +
       nav("robot", "Teach robot") +
       "</div>"
-    );
-  }
-  const flag = (id, label, checked) =>
-    '<label><select id="' +
-    id +
-    '">' +
-    option("yes", "Yes", checked ? "yes" : "no") +
-    option("no", "No", checked ? "yes" : "no") +
-    "</select>" +
-    label +
-    "</label>";
-  function lineUI() {
-    const o = state.order;
-    return (
-      '<h2>Operate packing cell PK-01</h2><p>Set the field inputs, then run one carton. Watch your PLC output, taught robot cycle, inspection result and MES counters. Try one reject, then make up the shortfall.</p><div class="grid"><section class="card"><h3>Operator station</h3><div class="fields">' +
-      flag("guard", "Process permissive healthy", state.guard) +
-      flag("infeed", "Blank present at infeed", state.infeed) +
-      flag("auto", "Automatic mode selected", state.auto) +
-      '<label>Next camera result<select id="quality">' +
-      option("Pass", "Accept carton", state.quality) +
-      option("Reject", "Reject carton", state.quality) +
-      '</select></label></div><div class="actions">' +
-      action("cycle", "Execute one cycle", true) +
-      action("stop", "Stop cell") +
-      "</div>" +
-      message() +
-      '</section><section class="card"><h3>Production readback</h3><div class="lineflow"><span>Inspect infeed</span> → <span class="' +
-      (state.lastRun ? "running" : "") +
-      '">Robot</span> → <span>Finished stock</span></div><p>' +
-      esc(o.events.at(-1)?.summary || "No carton has completed a cycle.") +
-      "</p>" +
-      facts([
-        ["PLC run output", state.lastRun ? "ON" : "OFF"],
-        ["MES accepted", o.good + " / " + o.target],
-        ["MES rejected", o.rejects],
-        ["Physical blanks", initial() - used()],
-      ]) +
-      '<div class="actions">' +
-      nav("scada", "Open SCADA") +
-      nav("trace", "Trace the lot") +
-      '</div></section></div><div class="grid live-panels"><section class="card"><h3>Robot cycle replay</h3><div id="cell-live"></div></section><section class="card"><h3>Your operator screen</h3><div id="screen-live"></div></section></div>'
     );
   }
   function traceUI() {
@@ -305,7 +396,13 @@
           esc(e.id) +
           "</summary><p>" +
           esc(e.snapshot || e.summary) +
-          "</p></details></td><td>BL-2601 → " +
+          "</p>" +
+          (e.scans?.length
+            ? "<ol>" +
+              e.scans.map((scan) => "<li>" + esc(scan) + "</li>").join("") +
+              "</ol>"
+            : "") +
+          "</details></td><td>BL-2601 → " +
           esc(e.lot) +
           "</td><td>" +
           esc(e.result) +
@@ -386,9 +483,9 @@
         .join("")
     );
   }
-  function cycle() {
+  function checkStart() {
     const o = state.order;
-    state.lastRun = false;
+    if (stale) return "This tab is paused. Load the latest saved workspace.";
     if (o.status !== "Running")
       return "No running MES order. Release the order in ERP and dispatch the matching recipe in MES.";
     if (o.good >= o.target)
@@ -407,15 +504,31 @@
       return "Operator screen is uncommissioned. Bind a run indicator and good count and prove runtime.";
     if (!machines.robotReady(state))
       return "Robot program has no proven pick and place. Teach and test the cell.";
-    state.lastRun = true;
-    const accepted = state.quality === "Pass",
-      id = o.id + "-" + String(o.events.length + 1).padStart(3, "0");
+    return "";
+  }
+  function commitCarton(carton) {
+    const o = state.order;
+    if (writable && localStorage.getItem(key) !== savedVersion)
+      suspendStaleTab();
+    if (stale) throw new Error("A newer workspace is saved in another tab.");
+    if (carton.orderId !== o.id)
+      throw new Error("Carton belongs to another order.");
+    if (o.events.some((event) => event.id === carton.id)) return;
+    const expected =
+      o.id +
+      "-" +
+      String(o.cartonSerial || o.events.length + 1).padStart(3, "0");
+    if (carton.id !== expected || carton.stage !== "complete")
+      throw new Error("Carton has not reached its booking step.");
+    const problem = checkStart();
+    if (problem) throw new Error(problem);
+    const { accepted, id } = carton;
     const summary =
       id +
       " · " +
       (accepted
         ? "inspection accepted; robot transferred carton"
-        : "inspection rejected; carton held at infeed and booked to scrap") +
+        : "inspection rejected; conveyor diverted carton to reject bin") +
       " · lot " +
       o.lot;
     const stamp = new Date().toISOString();
@@ -434,14 +547,30 @@
     o.events.push({
       id,
       lot: o.lot,
-      result: state.quality,
+      result: accepted ? "Pass" : "Reject",
       accepted,
       summary,
       snapshot,
+      scans: (state.lineTrace || [])
+        .filter((row) => row.order === o.id && row.text.startsWith(id + " · "))
+        .map((row) => row.text),
     });
     if (accepted) o.good++;
     else o.rejects++;
-    record("PLC → robot → MES", summary);
+    if (state.interfaceOnline) o.posted.push(id);
+    record("PLC → cell → MES", summary);
+    if (state.interfaceOnline)
+      record(
+        "ERP interface",
+        id +
+          " acknowledged. Goods issue: one blank. Finished receipt: " +
+          (accepted ? "one carton." : "zero cartons."),
+      );
+
+    if (stale)
+      throw new Error(
+        "Another tab changed the saved ledger. Load the latest work.",
+      );
     return summary;
   }
   function perform(id) {
@@ -478,12 +607,6 @@
             ".",
         );
         return "Order running. Commission the workstations, then run the line.";
-      case "cycle":
-        return cycle();
-      case "stop":
-        state.lastRun = false;
-        record("PLC", "Operator stopped the cell.");
-        return "Run output OFF. Stock and order quantities are unchanged.";
       case "interface":
         state.interfaceOnline = !state.interfaceOnline;
         record(
@@ -538,7 +661,11 @@
         return "New order created.";
     }
   }
+  let activeLine;
   function render() {
+    if (stale) return;
+    activeLine?.destroy();
+    activeLine = null;
     const newStation = stations.includes(location.hash.slice(1))
       ? location.hash.slice(1)
       : "orders";
@@ -557,28 +684,40 @@
       scada: controls.renderSCADA,
     }[station];
     if (editor) editor(root, ctx);
-    else
-      root.innerHTML = { orders: ordersUI, line: lineUI, trace: traceUI }[
-        station
-      ]();
-    if (station === "line") {
-      machines.showCell(document.getElementById("cell-live"), state);
-      controls.renderOperator(document.getElementById("screen-live"), state);
+    else if (station === "sequence") window.SWSequence.mount(root, state, save);
+    else if (station === "line") {
+      activeLine = window.SWLineWorkspace.mount(root, {
+        ...ctx,
+        checkStart,
+        commit: commitCarton,
+        renderOperator: (container) =>
+          controls.renderOperator(container, state),
+        inventory: () => ({
+          blanks: initial() - postedRaw(),
+          physicalBlanks: physicalBlanks(),
+          finished: finished(state.order.sku),
+          queued: state.order.events.length - state.order.posted.length,
+        }),
+        post: () => perform("post"),
+        go: (hash) => {
+          location.hash = hash.replace(/^#/, "");
+        },
+      });
+    } else {
+      root.innerHTML = station === "orders" ? ordersUI() : traceUI();
+      if (station === "trace") {
+        const practice = document.createElement("section");
+        root.append(practice);
+        window.SWSAP.mount(practice, state);
+      }
     }
   }
   root.addEventListener("click", (event) => {
     const b = event.target.closest("[data-work]");
-    if (!b) return;
-    const previous = state.order.events.length;
+    if (!b || station === "line") return;
     feedback = perform(b.dataset.work);
     save();
     render();
-    if (b.dataset.work === "cycle" && state.order.events.length > previous)
-      machines.playCycle(
-        document.getElementById("cell-live"),
-        state,
-        state.order.events.at(-1).accepted,
-      );
     const target = root.querySelector('[data-work="' + b.dataset.work + '"]');
     if (target) target.focus({ preventScroll: true });
   });
@@ -594,21 +733,17 @@
         state.order.target = event.target.valueAsNumber;
       if (id === "sku" || id === "target") save();
     }
-    if (
-      !["guard", "infeed", "auto", "quality"].includes(id) ||
-      station !== "line"
-    )
-      return;
-    state[id] =
-      id === "quality" ? event.target.value : event.target.value === "yes";
-    if (!state.guard || !state.infeed || !state.auto) state.lastRun = false;
-    save();
-    render();
-    document.getElementById(id)?.focus({ preventScroll: true });
   });
   document.querySelector(".skip").addEventListener("click", (e) => {
     e.preventDefault();
     root.focus();
+  });
+  document.getElementById("bench-mode").innerHTML = referenceMode
+    ? 'Reference line · preconfigured for practice. <a href="production.html#orders">Open my commissioning workspace</a>'
+    : '<a href="production.html?bench=reference#line">Try the preconfigured 3D line</a> · Your commissioning work is saved separately.';
+  window.addEventListener("pagehide", () => activeLine?.destroy());
+  window.addEventListener("pageshow", (event) => {
+    if (event.persisted) render();
   });
   window.addEventListener("hashchange", render);
   render();

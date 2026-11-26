@@ -36,6 +36,11 @@ async function check() {
     const stage = (id) =>
       page.locator('#stations a[href="#' + id + '"]').click();
     const readNotice = () => page.locator("#work-notice").innerText();
+    const waitCartons = (count) =>
+      page.waitForFunction((n) => {
+        const s = JSON.parse(localStorage.getItem("signalworks.production.v1"));
+        return s.order.events.length === n && !s.carton;
+      }, count);
     await page.locator("#target").fill("2");
     await byWork("release");
     await byWork("dispatch");
@@ -149,6 +154,29 @@ async function check() {
     await page.getByText(/Reject hold: passed/).waitFor();
     await stage("trace");
     await byWork("interface");
+    await stage("sequence");
+    await page.locator("[data-seq=example]").click();
+    const code = page.locator("[data-seq-code]");
+    const source = await code.inputValue();
+    await code.fill(
+      source.replace(
+        "ACCEPTED ? TRANSFER : REJECT",
+        "ACCEPTED ? REJECT : TRANSFER",
+      ),
+    );
+    await page.locator("[data-seq=compile]").click();
+    await page.locator("[data-seq=prove]").click();
+    assert.equal(
+      await page.evaluate(() =>
+        SWSequence.ready(
+          JSON.parse(localStorage.getItem("signalworks.production.v1")),
+        ),
+      ),
+      false,
+    );
+    await code.fill(source);
+    await page.locator("[data-seq=compile]").click();
+    await page.locator("[data-seq=prove]").click();
     await stage("line");
     await page.locator("#guard").selectOption("no");
     await byWork("cycle");
@@ -156,9 +184,12 @@ async function check() {
     await page.locator("#guard").selectOption("yes");
     await page.locator("#quality").selectOption("Reject");
     await byWork("cycle");
+    await waitCartons(1);
     await page.locator("#quality").selectOption("Pass");
     await byWork("cycle");
+    await waitCartons(2);
     await byWork("cycle");
+    await waitCartons(3);
     await page
       .locator("#screen-live")
       .getByText("Cartons accepted", { exact: true })
@@ -206,6 +237,7 @@ async function check() {
       "trace",
       "servers",
       "plc",
+      "sequence",
       "scada",
       "robot",
       "line",
@@ -224,7 +256,7 @@ async function check() {
       JSON.stringify({
         base,
         room: "direct load, five stages and orbit",
-        workstations: 7,
+        workstations: await page.locator("#stations a").count(),
         cartons: 3,
         accepted: 2,
         rejects: 1,

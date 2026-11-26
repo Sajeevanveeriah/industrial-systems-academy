@@ -4,6 +4,8 @@ Signal Works is a standalone personal academy with eight curriculum tracks, four
 
 ## Maintain the site
 
+The 3D line takes its next stage from the learner's compiled sequence and follows a single carton identifier until booking. MES records completion once. While the ERP interface is online, the same event updates ERP inventory; when offline it remains queued for idempotent replay. The reference line has a separate browser storage key. Equipment and SAP training use public examples; the plant-specific products and configurations require separate identification.
+
 The dashboard leads into the shared packing-line workshop in `production.html`. Its seven workstations share a single order record. The machines and controls scripts expose the simulated commissioning tests, PLC execution, operator screens and robot replay used by the line. Keep browser entry scripts compatible with direct local file access. The room renderer uses classic deferred scripts on both the dashboard and room page. A local file test must exercise the inspector and change rendered geometry before publishing.
 
 - Edit the lesson content in `lessons.js`. Progress keys consist of a track ID and lesson index, so append lessons rather than reordering existing entries on a published track.

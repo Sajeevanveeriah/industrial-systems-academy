@@ -361,6 +361,30 @@
     });
   }
   const tags = {
+    "cell.atCamera": {
+      label: "Inspection photoeye",
+      kind: "bool",
+      read: (s) => s.carton?.stage === "inspect",
+    },
+    "cell.conveyor": {
+      label: "Infeed conveyor moving",
+      kind: "bool",
+      read: (s) => s.lastRun === true && s.carton?.stage === "feed",
+    },
+    "erp.finished": {
+      label: "ERP stock for this SKU",
+      kind: "number",
+      read: (s) =>
+        [...(s.archive || []), s.order]
+          .filter((o) => o && o.sku === s.order.sku)
+          .reduce(
+            (total, o) =>
+              total +
+              o.events.filter((e) => e.accepted && o.posted.includes(e.id))
+                .length,
+            0,
+          ),
+    },
     "order.events.accepted": {
       label: "Accepted total by cycle",
       kind: "series",

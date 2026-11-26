@@ -23,6 +23,14 @@ const assets = [
   "production.js",
   "production-machines.js",
   "production-controls.js",
+  "line-sequence.js",
+  "line-scene.js",
+  "line-workspace.js",
+  "line-workspace.css",
+  "equipment.html",
+  "equipment.css",
+  "equipment.js",
+  "sap-practice.js",
 ];
 const output = new URL("./dist/", import.meta.url);
 await mkdir(output, { recursive: true });

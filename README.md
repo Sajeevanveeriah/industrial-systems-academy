@@ -6,6 +6,8 @@ A personal learning site for the engineer responsible for the server room and pr
 
 ## A route through the academy
 
+The [3D reference line](https://industrial-systems-academy.pages.dev/production?bench=reference#line) starts with a released order, taught robot and example control program. Its storage is separate from your commissioning workspace. Watch a single carton or advance the controller one scan at a time. In the [sequence editor](https://industrial-systems-academy.pages.dev/production#sequence), edit and prove both the accepted and rejected routes. In the [equipment workbench](https://industrial-systems-academy.pages.dev/equipment), trace faults between physical components, software settings and production records.
+
 1. **Commission the infrastructure.** Study servers and industrial networks, then correct the historian settings on the server bench. Explain separately what the subnet, route, resolver and clock each control.
 2. **Trace a machine signal.** Work through PLC and SCADA lessons. Step the conveyor one scan at a time, interrupt its permissive and explain why recovery does not cause a restart.
 3. **Trace an order.** Study MES and ERP. Dispatch a simulated order, reject a carton, reconcile the shortfall and replay the interface messages without duplicating inventory.
@@ -31,3 +33,5 @@ npx wrangler@4.168.0 pages deploy dist --project-name industrial-systems-academy
 This is a direct-upload Pages project. Pushing to GitHub alone does not deploy. Only the browser assets included in the build are published.
 
 The browser regression in `tests/production.cjs` opens the local files by default. With Playwright and its browser available, run `node tests/production.cjs`. Set `QA_BROWSER=msedge` to use installed Edge. Pass the public site URL as the first argument to exercise the same flow on the deployed site.
+
+Run `node tests/line.cjs` for the precommissioned line, carton tracking, hardware and software benches, SAP worksheet and multi-tab checks. It accepts the same browser setting and optional base URL.
