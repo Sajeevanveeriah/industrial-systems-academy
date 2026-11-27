@@ -1,0 +1,229 @@
+.fry-install,
+.fry-operator {
+  color: #19332f;
+  color-scheme: light;
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  font-family: inherit;
+}
+.fry-install *,
+.fry-operator * {
+  box-sizing: border-box;
+}
+.fry-install h3,
+.fry-install h4,
+.fry-install p,
+.fry-operator p {
+  margin: 0;
+}
+.fi-panel {
+  background: #fff;
+  border: 1px solid #aec4b6;
+  border-radius: 10px;
+  display: grid;
+  gap: 12px;
+  padding: clamp(12px, 2vw, 20px);
+  min-width: 0;
+}
+.fi-actions,
+.fi-nav {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.fi-nav button,
+.fi-actions button,
+.fi-panel button,
+.fi-panel select,
+.fi-panel input,
+.fi-panel textarea {
+  font: inherit;
+  color: #173c32;
+  background: #f9fcf8;
+  border: 1px solid #718b79;
+  border-radius: 5px;
+  padding: 7px 10px;
+  max-width: 100%;
+  min-width: 0;
+}
+.fi-panel button,
+.fi-nav button {
+  cursor: pointer;
+}
+.fi-nav button[aria-pressed="true"],
+.fi-panel button.fi-primary {
+  background: #d9eee2;
+  color: #114839;
+  border-color: #50816c;
+}
+.fi-panel label {
+  display: grid;
+  gap: 4px;
+  font-size: 0.9rem;
+}
+.fi-fields,
+.fi-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(190px, 100%), 1fr));
+  gap: 10px;
+}
+.fi-panel textarea {
+  min-height: 120px;
+  width: 100%;
+  font:
+    14px/1.55 Consolas,
+    monospace;
+  resize: vertical;
+}
+.fi-panel pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  margin: 6px 0;
+  background: #eff5ed;
+  padding: 10px;
+}
+.fi-panel details p {
+  margin-top: 6px;
+}
+.fi-panel summary {
+  cursor: pointer;
+}
+.fi-help {
+  font-size: 0.93rem;
+  color: #455d50;
+}
+.fi-result {
+  border-left: 3px solid #387a5d;
+  background: #e9f4e9;
+  color: #194830;
+  padding: 8px 12px;
+}
+.fi-open {
+  background: #fff4d9;
+  color: #664318;
+  border-left-color: #b38128;
+}
+.fi-ledger {
+  list-style: none;
+  display: grid;
+  padding: 0;
+  margin: 0;
+  gap: 4px;
+}
+.fi-ledger li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  border-bottom: 1px solid #d9e4da;
+  padding: 5px 0;
+}
+.fi-tile {
+  padding: 11px;
+  background: #f0f7ee;
+  border: 1px solid #acc4ae;
+  border-radius: 7px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.fi-tile b,
+.fi-tile output,
+.fi-tile small {
+  display: block;
+}
+.fi-tile output {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #135e46;
+}
+.fi-tile small {
+  font:
+    12px/1.4 Consolas,
+    monospace;
+  color: #476256;
+}
+.fi-rack {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+}
+.fi-rack span {
+  padding: 5px;
+  border: 1px solid #b4c6b8;
+  background: #f1f5ef;
+  font:
+    11px/1.4 Consolas,
+    monospace;
+}
+.fi-focus:focus-visible,
+.fry-install :focus-visible {
+  outline: 3px solid #9d570d;
+  outline-offset: 2px;
+}
+.fi-panel progress {
+  width: 100%;
+  accent-color: #206b50;
+}
+@media (max-width: 520px) {
+  .fi-fields {
+    grid-template-columns: 1fr;
+  }
+  .fi-nav button {
+    font-size: 13px;
+  }
+  .fi-rack {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+.fi-rack {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2px;
+  padding: 8px 15px;
+  background: repeating-linear-gradient(0deg, #e5ece5 0 5px, #c8d5cb 6px 8px);
+  border: 2px solid #93aa99;
+  border-radius: 8px;
+}
+.fi-rack button {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 3px 20px;
+  font:
+    12px/1.3 Consolas,
+    monospace;
+  text-align: left;
+  background: #f9fbf7;
+}
+.fi-rack button::before,
+.fi-rack button::after {
+  content: "";
+  width: 4px;
+  height: 4px;
+  position: absolute;
+  top: calc(50% - 2px);
+  border: 1px solid #748b79;
+  border-radius: 50%;
+}
+.fi-rack button::before {
+  left: 6px;
+}
+.fi-rack button::after {
+  right: 6px;
+}
+.fi-rack button[data-fi-fitted="true"] {
+  background: #d9ebe0;
+  color: #164935;
+  border-color: #668d76;
+}
+.fi-tile[data-fi-quality="Bad"],
+.fi-tile[data-fi-quality="Stale"] {
+  background: #fff3d7;
+  border-color: #a27a36;
+}
+.fi-tile[data-fi-quality="Bad"] output,
+.fi-tile[data-fi-quality="Stale"] output {
+  color: #774010;
+}

@@ -1,0 +1,419 @@
+:root {
+  color-scheme: light;
+  font:
+    16px/1.48 "Segoe UI",
+    system-ui,
+    sans-serif;
+  color: #1a332d;
+  background: #f4f5ef;
+  --line: #b7c9bd;
+  --teal: #16614b;
+  --muted: #496255;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+}
+header,
+footer {
+  padding: 13px max(4vw, calc((100vw - 1480px) / 2));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--line);
+  background: #fff;
+}
+header nav {
+  display: flex;
+  gap: 16px;
+}
+.brand {
+  font-weight: 800;
+  font-size: 1.35rem;
+  letter-spacing: -0.045em;
+  text-decoration: none;
+}
+a {
+  color: #155740;
+  text-underline-offset: 0.2em;
+}
+main {
+  max-width: 1540px;
+  margin: auto;
+  padding: 18px clamp(14px, 3vw, 40px) 40px;
+}
+.mast {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+.mast p {
+  margin: 3px 0;
+}
+.over,
+.caption,
+.mode label,
+th,
+.tag,
+.lot {
+  font:
+    650 0.72rem/1.45 ui-monospace,
+    Consolas,
+    monospace;
+  letter-spacing: 0.06em;
+}
+.over {
+  color: var(--teal);
+}
+h1,
+h2,
+h3 {
+  line-height: 1.12;
+  letter-spacing: -0.045em;
+}
+h1 {
+  font-size: clamp(2.2rem, 4vw, 3.9rem);
+  margin: 3px 0;
+}
+h2 {
+  margin: 0 0 10px;
+}
+h3 {
+  margin: 0.3em 0 0.6em;
+}
+.mode {
+  min-width: 195px;
+}
+.mode label,
+label {
+  display: grid;
+  gap: 3px;
+}
+button,
+select,
+input,
+textarea {
+  font: inherit;
+  color: #163c2b;
+  background: white;
+  padding: 7px 10px;
+  border-radius: 6px;
+  border: 1px solid #8aa394;
+  max-width: 100%;
+}
+button {
+  cursor: pointer;
+  font-weight: 630;
+}
+button:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+button:hover:not(:disabled),
+.tabs a:hover {
+  background: #e8f4e7;
+}
+.primary,
+.tabs a[aria-current] {
+  color: white;
+  background: #155d47;
+  border-color: #155d47;
+}
+.primary:hover:not(:disabled) {
+  background: #074e38;
+}
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 12px 0;
+}
+.tabs a {
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  padding: 7px 13px;
+  text-decoration: none;
+  font-weight: 650;
+}
+#mode-note {
+  font-size: 0.9rem;
+  color: var(--muted);
+  margin: 5px 0;
+}
+#workspace {
+  outline: none;
+}
+.panelset {
+  display: grid;
+  grid-template-columns: minmax(0, 1.9fr) minmax(290px, 1fr);
+  gap: 13px;
+}
+.box,
+.stage-editor,
+.history-card {
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: white;
+  padding: 16px;
+}
+.viewport {
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.viewport canvas {
+  display: block;
+  width: 100%;
+  height: clamp(280px, 44vh, 520px);
+  background: #edf4ef;
+  touch-action: none;
+}
+.viewhead,
+.viewfoot,
+.row,
+.buttons,
+.ophead {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.viewhead,
+.viewfoot {
+  padding: 9px 14px;
+  justify-content: space-between;
+}
+.viewhead {
+  border-bottom: 1px solid var(--line);
+}
+.viewfoot {
+  border-top: 1px solid var(--line);
+  font-size: 0.88rem;
+}
+.viewhead button {
+  font-size: 0.8rem;
+}
+.dock {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+}
+.ophead {
+  justify-content: space-between;
+}
+.lot {
+  background: #ffedbc;
+  padding: 5px 8px;
+  border-radius: 4px;
+}
+.buttons {
+  margin: 10px 0;
+}
+.statusline {
+  padding: 8px 11px;
+  background: #e8f0e8;
+  border-left: 3px solid var(--teal);
+  font-size: 0.89rem;
+}
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+.metrics div {
+  padding: 6px 9px;
+  background: #ecf3ed;
+  border-radius: 5px;
+}
+.metrics span,
+.metrics strong {
+  display: block;
+}
+.metrics span {
+  font-size: 0.75rem;
+  color: #435c4f;
+}
+.route {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin: 10px 0;
+}
+.route button {
+  font-size: 0.83rem;
+  padding: 5px 8px;
+}
+.route button[aria-pressed="true"] {
+  border: 2px solid #146349;
+}
+.route button.done {
+  background: #d4ecd7;
+}
+.route button.current {
+  box-shadow: inset 0 -3px #e4a326;
+}
+.stage-editor {
+  margin-top: 12px;
+}
+.stage-editor h2 {
+  font-size: 1.35rem;
+}
+.runbar {
+  padding: 10px 15px;
+  background: #f7faf5;
+  border-bottom: 1px solid var(--line);
+}
+progress {
+  width: 100%;
+  accent-color: var(--teal);
+  height: 10px;
+}
+.history-card {
+  overflow: auto;
+}
+.history-card table {
+  border-collapse: collapse;
+  width: 100%;
+}
+.history-card td,
+.history-card th {
+  padding: 7px;
+  border-bottom: 1px solid #d8e3db;
+  text-align: left;
+  vertical-align: top;
+}
+.history-card small {
+  display: block;
+}
+.skip {
+  position: absolute;
+  left: -999px;
+}
+.skip:focus {
+  left: 10px;
+  background: white;
+}
+.subtle {
+  font-size: 0.88rem;
+  color: #47604f;
+}
+.pill {
+  border-radius: 20px;
+  background: #e6efd9;
+  padding: 3px 9px;
+}
+.help {
+  border: 1px solid var(--line);
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: #fcfbef;
+  margin: 8px 0;
+}
+.help summary {
+  cursor: pointer;
+  font-weight: 650;
+}
+footer {
+  border-bottom: 0;
+  border-top: 1px solid var(--line);
+  font-size: 0.84rem;
+}
+a:focus-visible,
+button:focus-visible,
+select:focus-visible,
+input:focus-visible {
+  outline: 3px solid #c3680d;
+  outline-offset: 2px;
+}
+@media (max-width: 930px) {
+  .panelset {
+    grid-template-columns: minmax(0, 1.4fr) minmax(255px, 1fr);
+  }
+}
+@media (max-width: 710px) {
+  .panelset {
+    grid-template-columns: 1fr;
+  }
+  .viewport canvas {
+    height: 310px;
+  }
+  .mast {
+    display: block;
+  }
+  .mode {
+    margin: 8px 0;
+    max-width: 100%;
+  }
+  header {
+    font-size: 0.82rem;
+  }
+  header nav {
+    gap: 7px;
+  }
+  .route button {
+    font-size: 0.76rem;
+  }
+  .tabs a {
+    padding: 6px 9px;
+    font-size: 0.88rem;
+  }
+}
+#station-config {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+#station-config:disabled {
+  opacity: 0.9;
+}
+.viewhead .buttons {
+  margin: 0;
+}
+.history-card pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.dock .fry-operator {
+  gap: 5px;
+}
+.dock .fry-operator h4 {
+  margin: 2px 0;
+}
+.dock .fi-tiles {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px;
+}
+.dock .fi-tile {
+  padding: 5px;
+  gap: 1px;
+  font-size: 0.82rem;
+  min-height: 0;
+}
+.dock .fi-tile b,
+.dock .fi-tile small,
+.dock .metrics span {
+  font-size: 0.73rem;
+}
+.dock .fi-tile output {
+  font-size: 0.95rem;
+}
+.dock .metrics {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px;
+}
+.dock .metrics div {
+  padding: 4px 7px;
+}
+.dock h3 {
+  margin-bottom: 6px;
+}
+.viewport .buttons {
+  margin: 5px 0;
+}

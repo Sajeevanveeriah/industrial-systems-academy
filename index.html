@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="style.css" />
     <script defer src="lessons.js"></script>
     <script defer src="room-view.js"></script>
+    <script defer src="fry-scene.js"></script>
     <script defer src="app.js"></script>
   </head>
   <body>
@@ -41,26 +42,23 @@
       <section class="hero workshop-hero" aria-labelledby="hero-title">
         <div class="hero-copy">
           <div class="eyebrow">Industrial Systems Academy</div>
-          <h1 id="hero-title">Commission a<br />production line.</h1>
+          <h1 id="hero-title">Build a French<br />fry plant.</h1>
           <p>
-            Bring a packing line online, from the servers and PLC to the
-            operator display, robot cell and production order.
+            Install the controls and machinery, then follow a potato batch from
+            the receiving hopper to frozen packs and dispatch.
           </p>
           <div class="actions">
-            <a class="btn" href="production.html"
-              >Enter the production workshop
-              <span aria-hidden="true">→</span></a
-            >
-            <a href="production.html?bench=reference#line"
-              >Run the reference line in 3D →</a
-            >
+            <a class="btn" href="fries.html?mode=solved#floor"
+              >Operate the 3D fry line →</a
+            ><a href="fries.html?mode=build#rack">Build from empty</a
+            ><a href="fries.html?mode=worked#history">Inspect a solved batch</a>
           </div>
         </div>
         <div class="line-visual">
           <canvas
-            id="line-preview"
+            id="fry-preview"
             role="img"
-            aria-label="Packing line with server equipment, control cabinet, operator console, robot and finished cartons"
+            aria-label="Three-dimensional French fry plant from potato receiving through dispatch. Drag to orbit."
           ></canvas>
         </div>
       </section>
@@ -68,7 +66,10 @@
         <div class="section-head">
           <div>
             <h2 id="station-title">Workshop stations</h2>
-            <p>Open a station to work on its part of the same line.</p>
+            <p>
+              Individual controls and robot-cell exercises.
+              <a href="production.html">Enter the production workshop →</a>
+            </p>
           </div>
         </div>
         <nav class="stations" aria-label="Hands-on workstations">

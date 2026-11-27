@@ -31,6 +31,16 @@ const assets = [
   "equipment.css",
   "equipment.js",
   "sap-practice.js",
+  "fries.html",
+  "fries.css",
+  "fries.js",
+  "fry-scene.js",
+  "fry-rack.js",
+  "fry-process.js",
+  "fry-install.js",
+  "fry-install.css",
+  "fry-ledger.js",
+  "fry-ledger.css",
 ];
 const output = new URL("./dist/", import.meta.url);
 await mkdir(output, { recursive: true });

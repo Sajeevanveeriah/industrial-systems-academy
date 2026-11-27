@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en-AU">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>French fry plant | Signal Works</title>
+    <link rel="stylesheet" href="fries.css" />
+    <link rel="stylesheet" href="fry-install.css" />
+    <link rel="stylesheet" href="fry-ledger.css" />
+    <script defer src="fry-process.js"></script>
+    <script defer src="fry-install.js"></script>
+    <script defer src="fry-ledger.js"></script>
+    <script defer src="fry-scene.js"></script>
+    <script defer src="fry-rack.js"></script>
+    <script defer src="fries.js"></script>
+  </head>
+  <body>
+    <a class="skip" href="#workspace">Skip to work area</a>
+    <header>
+      <a class="brand" href="index.html">∿ Signal Works</a>
+      <nav aria-label="Further practice">
+        <a href="room.html">3D server room</a
+        ><a href="production.html#sequence">Packing cell PLC</a>
+      </nav>
+    </header>
+    <main>
+      <div class="mast">
+        <div>
+          <p class="over">PROCESS ENGINEERING WORKSHOP</p>
+          <h1>French fry plant</h1>
+          <p>Take one potato lot from intake to frozen packs and dispatch.</p>
+        </div>
+        <div class="mode">
+          <label for="mode">Workspace</label
+          ><select id="mode">
+            <option value="build">Build from empty</option>
+            <option value="solved">Operate installed plant</option>
+            <option value="worked">Inspect completed example</option>
+          </select>
+        </div>
+      </div>
+      <div id="mode-note"></div>
+      <nav class="tabs" aria-label="Plant workspaces">
+        <a href="#floor">3D plant floor</a><a href="#rack">Rack &amp; wiring</a
+        ><a href="#installation">Systems commissioning</a
+        ><a href="#business">MES &amp; SAP</a
+        ><a href="#history">Batch genealogy</a>
+      </nav>
+      <section id="workspace" tabindex="-1"></section>
+      <p id="storage" role="status"></p>
+    </main>
+    <footer>Signal Works · Industrial Systems Academy</footer>
+  </body>
+</html>

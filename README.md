@@ -1,5 +1,15 @@
 # Signal Works | Industrial Systems Academy
 
+## French fry plant
+
+The [French fry plant](https://industrial-systems-academy.pages.dev/fries?mode=solved#floor) follows a 1,000 kg training charge through receiving, washing, peeling, cutting, blanching, drying, par-frying, freezing, packing and dispatch. Start, hold or single-step each operation and release the batch to its next station. The operator screen, MES genealogy and simulated SAP postings share the batch and order identifiers.
+
+- [Build from empty](https://industrial-systems-academy.pages.dev/fries?mode=build#rack) to mount servers, wire the rack and field I/O, provision VMs and applications, program the PLC, commission SCADA and HMI, configure MES and SAP, and fit individual process machines.
+- [Operate an installed plant](https://industrial-systems-academy.pages.dev/fries?mode=solved#floor) to inspect and change a worked installation while running your own batch.
+- [Inspect a completed batch](https://industrial-systems-academy.pages.dev/fries?mode=worked#history) to compare recipes, weights and postings against a completed worked example.
+
+Open `fries.html` directly from the repository for the offline workshop. The empty and installed workspaces save separately in the browser. The worked example is regenerated from the model. Process times, mass coefficients and control limits are classroom assumptions. For regression checks, `node tests/fries.cjs` exercises the local files, or accepts the deployed base URL.
+
 [Open the academy](https://industrial-systems-academy.pages.dev/) · [Go straight to the practice bench](https://industrial-systems-academy.pages.dev/labs)
 
 A personal learning site for the engineer responsible for the server room and production line. In the [production workshop](https://industrial-systems-academy.pages.dev/production), release a carton order, configure two application servers, write the PLC permissive, design an operator screen and teach the robot. Inspect the event history to reconcile blank consumption, rejects and finished stock after an interface outage. The [3D server room](https://industrial-systems-academy.pages.dev/room) and [installation guide](https://industrial-systems-academy.pages.dev/room-guide) cover the physical facility.
