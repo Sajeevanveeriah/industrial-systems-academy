@@ -24,6 +24,7 @@ const assert = require("node:assert/strict"),
         .first()
         .click();
     }
+    await p.locator("#line.chapter").waitFor();
     assert.equal(await p.locator(".chapter:not(.transcript)").count(), 5);
     const v = p.locator("video");
     await v.waitFor();
