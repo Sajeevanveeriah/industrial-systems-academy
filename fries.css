@@ -460,3 +460,72 @@ input:focus-visible {
 .viewport .buttons[hidden] {
   display: none;
 }
+body[data-exercise] .tabs,
+body[data-exercise] #batch-route,
+body[data-exercise] #field-instruction {
+  display: none;
+}
+body[data-exercise] [hidden] {
+  display: none !important;
+}
+body[data-exercise] #practice-coach {
+  margin-bottom: 12px;
+  border-left: 5px solid #ad7216;
+}
+.practice-links {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  font-size: 0.88rem;
+}
+#practice-coach h2 {
+  font-size: 1.5rem;
+  margin: 0.55em 0 0.25em;
+}
+#practice-coach p {
+  margin: 0.25em 0;
+}
+#practice-coach [data-coach-step] {
+  font-weight: 650;
+}
+#practice-coach [data-coach-evidence] {
+  color: #405b4c;
+  margin-bottom: 0.6em;
+}
+body[data-exercise] .panelset {
+  grid-template-columns: minmax(0, 1.12fr) minmax(330px, 1fr);
+  align-items: start;
+}
+body[data-exercise] .panelset .viewport {
+  position: sticky;
+  top: 8px;
+}
+body[data-exercise] .panelset .stage-editor {
+  margin: 0;
+}
+body[data-exercise] .dock {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+}
+@media (max-width: 760px) {
+  body[data-exercise] .panelset {
+    display: block;
+  }
+  body[data-exercise] .panelset .viewport {
+    position: static;
+  }
+  body[data-exercise] .panelset .stage-editor {
+    margin-top: 10px;
+  }
+}
+body[data-exercise] #mode-note {
+  display: none;
+}
+body[data-exercise] .mast {
+  margin-bottom: 12px;
+}
+body[data-exercise] .mast .over {
+  margin: 0;
+}

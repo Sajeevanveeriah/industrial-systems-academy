@@ -1,0 +1,39 @@
+WEBVTT
+
+00:00:00.300 --> 00:00:06.285
+The hydraulic strip cutter and sliver sorter
+convert peeled potatoes into graded raw strips.
+
+00:00:06.355 --> 00:00:09.964
+Select the machine before connecting the
+simulated terminals.
+
+00:00:10.174 --> 00:00:16.376
+Connect cutter feed flow to AI04, then connect
+DO04 to product feed enable.
+
+00:00:16.446 --> 00:00:19.513
+An enable command needs independent flow proof.
+
+00:00:19.723 --> 00:00:22.785
+Select an installed cutter pitch of 10
+millimetres.
+
+00:00:22.855 --> 00:00:27.511
+In this exercise that is the accepted pitch, not
+a range of blade sizes.
+
+00:00:27.721 --> 00:00:29.830
+Inject loss of feed-flow proof.
+
+00:00:29.900 --> 00:00:35.017
+Stop accepting potatoes into the cutting stream
+until the input becomes valid again.
+
+00:00:35.227 --> 00:00:40.299
+Re-establish feed-flow proof, verify recovery
+and release the graded strips.
+
+00:00:40.369 --> 00:00:45.266
+The worked lot removes 32.242 kilograms at this
+stage.

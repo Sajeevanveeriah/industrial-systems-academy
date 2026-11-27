@@ -1,0 +1,471 @@
+<!doctype html>
+<html lang="en-AU">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#f3f4eb" />
+    <title>French fry production course | Signal Works</title>
+    <script defer src="fry-process.js"></script>
+    <style>
+      :root {
+        color-scheme: light;
+        --paper: #f4f5ec;
+        --panel: #fffef9;
+        --ink: #19382c;
+        --dim: #4c6054;
+        --rule: #c4d1be;
+        --green: #18563d;
+        --sage: #dfebd6;
+        --gold: #edc674;
+        font:
+          16px/1.5 Inter,
+          "Segoe UI",
+          Arial,
+          sans-serif;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--paper);
+        color: var(--ink);
+      }
+      a {
+        color: var(--green);
+        text-underline-offset: 3px;
+      }
+      a:focus-visible {
+        outline: 3px solid #a64d22;
+        outline-offset: 3px;
+      }
+      header {
+        background: var(--panel);
+        border-bottom: 1px solid var(--rule);
+      }
+      .wrap {
+        max-width: 1240px;
+        margin: auto;
+        padding: 0 clamp(16px, 4vw, 50px);
+      }
+      .bar {
+        min-height: 65px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+      }
+      .brand {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        font-size: 1.25rem;
+        font-weight: 770;
+        letter-spacing: -0.05em;
+        text-decoration: none;
+        color: var(--ink);
+      }
+      .brand b {
+        display: grid;
+        place-items: center;
+        background: #c7e8a5;
+        border-radius: 6px;
+        width: 26px;
+        height: 26px;
+      }
+      .bar nav {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+        font-size: 0.87rem;
+      }
+      .bar nav a {
+        text-decoration: none;
+      }
+      .bar nav a:hover {
+        text-decoration: underline;
+      }
+      .skip {
+        position: absolute;
+        left: -9999px;
+      }
+      .skip:focus {
+        left: 12px;
+        top: 10px;
+        background: #fff;
+        padding: 5px;
+        z-index: 2;
+      }
+      .hero {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        align-items: center;
+        gap: 30px;
+        margin: 28px 0;
+        padding: clamp(22px, 4vw, 52px);
+        border: 1px solid var(--rule);
+        border-radius: 12px;
+        background: var(--panel);
+      }
+      .over,
+      .stage-no {
+        font:
+          650 0.75rem/1.4 "IBM Plex Mono",
+          Consolas,
+          monospace;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #386248;
+      }
+      h1,
+      h2,
+      h3,
+      p {
+        margin: 0;
+      }
+      h1 {
+        font-size: clamp(2.7rem, 5.5vw, 4.7rem);
+        font-weight: 620;
+        letter-spacing: -0.075em;
+        line-height: 0.99;
+        margin: 10px 0 16px;
+      }
+      h2 {
+        font-size: clamp(1.5rem, 2.7vw, 2.1rem);
+        font-weight: 650;
+        letter-spacing: -0.055em;
+        line-height: 1.14;
+      }
+      h3 {
+        font-size: 1.28rem;
+        letter-spacing: -0.04em;
+        line-height: 1.15;
+      }
+      .lead {
+        max-width: 56ch;
+        color: var(--dim);
+      }
+      .start {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 10px 15px;
+        border-radius: 6px;
+        background: var(--green);
+        color: #fff;
+        text-decoration: none;
+        font-weight: 650;
+      }
+      .journey {
+        border: 1px solid #c0d1b8;
+        border-radius: 10px;
+        background-color: #e8efdf;
+        background-image: radial-gradient(#b8c9aa 0.85px, transparent 0.85px);
+        background-size: 14px 14px;
+        padding: 23px 15px;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        align-items: end;
+        gap: 8px;
+      }
+      .material {
+        margin: 0;
+        text-align: center;
+      }
+      .material figcaption {
+        font:
+          600 0.73rem/1.4 Consolas,
+          monospace;
+        color: #38513c;
+        background: #e8efdf;
+        display: inline-block;
+        padding: 0 3px;
+      }
+      .sample {
+        height: 95px;
+        max-width: 95px;
+        margin: auto;
+        position: relative;
+        display: block;
+      }
+      .sample i {
+        position: absolute;
+        display: block;
+      }
+      .tuber i {
+        background: #ba8e57;
+        border: 2px solid #745639;
+        border-radius: 43% 55% 36% 55%;
+        height: 35px;
+        width: 53px;
+        transform: rotate(-21deg);
+        top: 30px;
+        left: 11px;
+        box-shadow: inset -4px -4px #aa7945;
+      }
+      .tuber i:nth-child(2) {
+        background: #c9a473;
+        left: 32px;
+        top: 47px;
+        transform: rotate(32deg);
+      }
+      .strips i {
+        background: #efd18e;
+        border: 1px solid #98763c;
+        width: 61px;
+        height: 10px;
+        left: 13px;
+        top: 36px;
+        transform: rotate(-27deg);
+        box-shadow: inset 0 -2px #dcb777;
+      }
+      .strips i:nth-child(2) {
+        top: 48px;
+        left: 7px;
+      }
+      .strips i:nth-child(3) {
+        top: 60px;
+        left: 20px;
+      }
+      .bag i {
+        width: 47px;
+        height: 59px;
+        top: 21px;
+        left: calc(50% - 23px);
+        border: 2px solid #61806b;
+        border-radius: 4px 4px 8px 8px;
+        background: linear-gradient(
+          177deg,
+          #e7ecce 0 29%,
+          #769b7c 29% 53%,
+          #e4eacb 53% 100%
+        );
+        box-shadow: inset -4px 0 #b5c7a6;
+      }
+      .bag i::after {
+        content: "";
+        position: absolute;
+        inset: 4px 2px;
+        border-top: 2px dotted #8f9b7b;
+        border-bottom: 2px dotted #8f9b7b;
+      }
+      .group {
+        margin: 26px 0;
+      }
+      .group h2 {
+        margin-bottom: 12px;
+      }
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+      .stage-card {
+        display: grid;
+        align-content: start;
+        gap: 7px;
+        padding: 17px 19px;
+        border-radius: 8px;
+        border: 1px solid var(--rule);
+        border-left: 4px solid #7fa58c;
+        background: var(--panel);
+      }
+      .group:nth-of-type(3) .stage-card {
+        border-left-color: #d2a55c;
+      }
+      .group:nth-of-type(4) .stage-card {
+        border-left-color: #88aead;
+      }
+      .stage-no {
+        font-size: 0.68rem;
+      }
+      .stage-card p {
+        color: var(--dim);
+        font-size: 0.9rem;
+      }
+      .links {
+        display: flex;
+        gap: 6px 13px;
+        flex-wrap: wrap;
+        margin-top: 4px;
+      }
+      .links a {
+        font-size: 0.84rem;
+        font-weight: 620;
+      }
+      .links a:first-child {
+        font-weight: 730;
+      }
+      .foot {
+        border-top: 1px solid var(--rule);
+        padding-top: 20px;
+        padding-bottom: 28px;
+        font-size: 0.82rem;
+        color: var(--dim);
+      }
+      @media (max-width: 730px) {
+        .hero {
+          grid-template-columns: 1fr;
+          gap: 18px;
+        }
+        .journey {
+          max-width: 480px;
+          padding: 8px 12px;
+        }
+        .sample {
+          height: 80px;
+        }
+        .cards {
+          grid-template-columns: 1fr;
+        }
+        .bar nav {
+          gap: 9px;
+          font-size: 0.78rem;
+        }
+      }
+      @media (max-width: 420px) {
+        .hero {
+          margin: 16px 0;
+          padding: 18px;
+        }
+        .bar {
+          flex-wrap: wrap;
+          gap: 3px;
+          padding-top: 8px;
+          padding-bottom: 8px;
+        }
+        .bar nav {
+          flex-wrap: wrap;
+        }
+        .stage-card {
+          padding: 14px;
+        }
+      }
+      .print-link {
+        color: #165f48;
+        display: inline-block;
+        margin: 12px 8px;
+        font-weight: 650;
+      }
+    </style>
+  </head>
+  <body>
+    <a class="skip" href="#course">Skip to course</a>
+    <header>
+      <div class="wrap bar">
+        <a class="brand" href="index.html"
+          ><b aria-hidden="true">∿</b> Signal Works</a
+        >
+        <nav aria-label="Academy">
+          <a href="index.html">Academy home</a
+          ><a href="fries.html?mode=build#site">Build the whole plant</a>
+        </nav>
+      </div>
+    </header>
+    <main class="wrap" id="course">
+      <section class="hero">
+        <div>
+          <p class="over">Industrial Systems Academy</p>
+          <h1>French fry<br />production course.</h1>
+          <p class="lead">
+            Follow the worked batch from receiving to dispatch. At any stage,
+            read or watch the short lesson, then commission that machine
+            yourself in the 3D plant. Each attempt saves separately.
+          </p>
+          <a
+            class="start"
+            href="fries.html?mode=practice&amp;stage=receive#lesson/receive"
+            >Start with receiving →</a
+          >
+          <a class="print-link" href="stage-handbook.pdf"
+            >Read the ten-page handbook (PDF)</a
+          >
+        </div>
+        <div
+          class="journey"
+          aria-label="Material changes from potatoes to cut fries and sealed packs"
+        >
+          <figure class="material">
+            <span class="sample tuber" aria-hidden="true"><i></i><i></i></span>
+            <figcaption>Raw potatoes</figcaption>
+          </figure>
+          <figure class="material">
+            <span class="sample strips" aria-hidden="true"
+              ><i></i><i></i><i></i
+            ></span>
+            <figcaption>Cut strips</figcaption>
+          </figure>
+          <figure class="material">
+            <span class="sample bag" aria-hidden="true"><i></i></span>
+            <figcaption>Sealed packs</figcaption>
+          </figure>
+        </div>
+      </section>
+      <div id="stage-list" aria-label="Course stages"></div>
+      <noscript>Enable JavaScript to open the ten stage workstations.</noscript>
+    </main>
+    <footer class="wrap foot">Signal Works · Industrial Systems Academy</footer>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const root = document.getElementById("stage-list");
+        const stages = window.FryProcess?.stages;
+        if (!Array.isArray(stages)) {
+          root.textContent =
+            "The stage catalogue could not be loaded. Open this page alongside its course files.";
+          return;
+        }
+        const groups = [
+          ["Intake and preparation", 0, 4],
+          ["Thermal processing and freezing", 4, 8],
+          ["Packing and distribution", 8, 10],
+        ];
+        const node = (tag, content, cls) => {
+          const el = document.createElement(tag);
+          el.textContent = content;
+          if (cls) el.className = cls;
+          return el;
+        };
+        for (const [title, first, last] of groups) {
+          const group = node("section", "", "group"),
+            cards = node("div", "", "cards");
+          group.append(node("h2", title), cards);
+          for (const [offset, stage] of stages.slice(first, last).entries()) {
+            const article = node("article", "", "stage-card");
+            article.id = stage.id;
+            const links = node("div", "", "links");
+            article.append(
+              node(
+                "span",
+                "Stage " + String(first + offset + 1).padStart(2, "0"),
+                "stage-no",
+              ),
+              node("h3", stage.name),
+              node("p", stage.reason),
+              links,
+            );
+            for (const [label, mode, area] of [
+              ["Read & watch", "practice", "lesson"],
+              ["Practise", "practice", "floor"],
+              ["Worked example", "stageworked", "floor"],
+            ]) {
+              const a = node("a", label);
+              const id = encodeURIComponent(stage.id);
+              a.href =
+                "fries.html?mode=" +
+                mode +
+                "&stage=" +
+                id +
+                "#" +
+                area +
+                "/" +
+                id;
+              a.setAttribute("aria-label", label + " · " + stage.name);
+              links.append(a);
+            }
+            cards.append(article);
+          }
+          root.append(group);
+        }
+      });
+    </script>
+  </body>
+</html>

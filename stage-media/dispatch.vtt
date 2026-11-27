@@ -1,0 +1,40 @@
+WEBVTT
+
+00:00:00.300 --> 00:00:04.314
+The pallet transfer and dock scanner move the
+packed lot to dispatch.
+
+00:00:04.384 --> 00:00:09.284
+A correct destination is useful only when the
+pallet identity also matches.
+
+00:00:09.494 --> 00:00:15.462
+Connect pallet ID scan valid to DI10 and dock
+transfer release to DO10.
+
+00:00:15.532 --> 00:00:18.649
+The scan is evidence, and the release is a
+command.
+
+00:00:18.859 --> 00:00:21.351
+Set the dock lane assignment to lane 2.
+
+00:00:21.421 --> 00:00:25.944
+Match the packed lot, production order and
+selected lane before transfer.
+
+00:00:26.154 --> 00:00:28.669
+Inject an unreadable pallet identity.
+
+00:00:28.739 --> 00:00:33.947
+Keep the load in staging and inspect the
+outstanding order rather than issuing another
+transfer.
+
+00:00:34.157 --> 00:00:37.426
+Rescan the matching pallet and confirm the dock
+lane.
+
+00:00:37.496 --> 00:00:44.055
+The worked batch dispatches all 744 packed
+kilograms without an extra process loss.

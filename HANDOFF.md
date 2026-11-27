@@ -4,6 +4,8 @@ Signal Works is a standalone personal academy with eight curriculum tracks, four
 
 ## Maintain the site
 
+The stage catalogue opens the same fry application with `mode=practice` or `mode=stageworked` and a stage ID. Keep each learner key independent from the full plant and from the read-only worked batch. Keep the stage film, caption, exact I/O pairs, model quantities, guided fault test and lesson in agreement. Verify practice, comparison, replay, reload and single-station reset when changing the route.
+
 The beginner reader is the first action on the academy home page. Keep the transcript, caption timing, film and printed answers aligned. Verify the public lesson and direct-file playback with `node tests/study.cjs` (optional base URL). Use only independently drawn, fictional network examples in this public course.
 
 Facility services is available from the fry plant at `#facility` and directly from `facility-services.html`. The embedded instance has a workspace-scoped storage key and the completed example is read-only. Keep public training geometry and example endpoint records independent of operational drawings. Check the standalone and embedded controls when changing this module.

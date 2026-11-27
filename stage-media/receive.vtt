@@ -1,0 +1,40 @@
+WEBVTT
+
+00:00:00.300 --> 00:00:02.925
+Start with the metering hopper and weigh belt.
+
+00:00:02.995 --> 00:00:08.235
+The equipment feeds whole potatoes while the
+batch record preserves their supplier lot.
+
+00:00:08.444 --> 00:00:11.322
+Connect belt scale load to AI01.
+
+00:00:11.392 --> 00:00:14.636
+Connect AO01 to the feeder speed demand.
+
+00:00:14.706 --> 00:00:18.258
+The measurement comes in, and the speed request
+goes out.
+
+00:00:18.468 --> 00:00:22.242
+Set the training feed rate to 100 kilograms per
+minute.
+
+00:00:22.312 --> 00:00:26.144
+A 1,000 kilogram charge then takes ten model
+minutes.
+
+00:00:26.354 --> 00:00:28.777
+Inject the belt scale quality fault.
+
+00:00:28.847 --> 00:00:32.782
+The last weight may still be visible, but the
+feeder must hold.
+
+00:00:32.992 --> 00:00:35.977
+Restore the load-cell signal and verify zero.
+
+00:00:36.047 --> 00:00:40.805
+Prove the recovery before releasing the same
+1,000 kilogram lot to washing.

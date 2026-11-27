@@ -1,0 +1,39 @@
+WEBVTT
+
+00:00:00.300 --> 00:00:05.351
+The continuous water blancher moves cut strips
+through a simulated residence zone.
+
+00:00:05.421 --> 00:00:09.107
+Belt travel provides evidence of the time spent
+in that zone.
+
+00:00:09.317 --> 00:00:15.831
+Connect the blancher belt encoder to AI05, and
+the conveyor speed output to AO05.
+
+00:00:15.901 --> 00:00:19.447
+A requested speed and observed travel are
+different signals.
+
+00:00:19.657 --> 00:00:22.769
+Set the model residence time to 90 seconds.
+
+00:00:22.839 --> 00:00:26.015
+Check the accepted window before testing the
+transfer.
+
+00:00:26.225 --> 00:00:28.354
+Inject the stale encoder fault.
+
+00:00:28.424 --> 00:00:33.409
+A retained speed value is insufficient when new
+encoder evidence stops arriving.
+
+00:00:33.619 --> 00:00:37.854
+Restore the encoder and verify travel time with
+a simulated marker.
+
+00:00:37.924 --> 00:00:42.632
+In the worked balance, added water makes output
+mass greater than input mass.

@@ -1,0 +1,197 @@
+.stc {
+  --stc-ink: #193c32;
+  --stc-line: #bfd0ba;
+  --stc-paper: #f8fbf2;
+  color: var(--stc-ink);
+  background: var(--stc-paper);
+  border: 1px solid var(--stc-line);
+  border-radius: 0.75rem;
+  padding: clamp(0.8rem, 2.4vw, 1.6rem);
+  min-width: 0;
+  line-height: 1.52;
+}
+.stc * {
+  box-sizing: border-box;
+}
+.stc h3,
+.stc h4 {
+  color: var(--stc-ink);
+  line-height: 1.16;
+  letter-spacing: -0.025em;
+  margin: 0.25rem 0 0.55rem;
+}
+.stc h3 {
+  font-size: clamp(1.55rem, 3.2vw, 2.7rem);
+  max-width: 25ch;
+}
+.stc h4 {
+  font-size: 1.18rem;
+}
+.stc p {
+  color: #385347;
+  margin: 0.45rem 0;
+  max-width: 78ch;
+}
+.stc .stc-kicker,
+.stc dt {
+  color: #386749;
+  font:
+    650 0.77rem/1.4 Consolas,
+    monospace;
+  letter-spacing: 0.045em;
+}
+.stc .stc-kicker {
+  text-transform: uppercase;
+}
+.stc-lead {
+  font-size: 1.02rem;
+}
+.stc-top,
+.stc-body {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+  gap: clamp(0.8rem, 2vw, 1.4rem);
+  align-items: start;
+}
+.stc-body {
+  margin: 1rem 0;
+  align-items: stretch;
+}
+.stc-card,
+.stc-steps {
+  min-width: 0;
+  background: white;
+  border: 1px solid var(--stc-line);
+  border-radius: 0.5rem;
+  padding: 0.8rem 1rem;
+}
+.stc-film {
+  margin: 0;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  background: #e1eedc;
+  border: 1px solid var(--stc-line);
+}
+.stc-film video {
+  width: 100%;
+  aspect-ratio: 16/9;
+  display: block;
+  background: #203f32;
+}
+.stc-film figcaption {
+  font-size: 0.86rem;
+  padding: 0.4rem 0.7rem;
+  color: #2c4b3b;
+}
+.stc-film details {
+  padding: 0.2rem 0.7rem 0.45rem;
+}
+.stc summary {
+  cursor: pointer;
+  font-weight: 650;
+  color: #194b35;
+}
+.stc-transcript p {
+  font-size: 0.93rem;
+}
+.stc-routes,
+.stc-values {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0.7rem 0 0;
+}
+.stc-routes > div {
+  border-left: 3px solid #79a57d;
+  padding: 0.2rem 0.55rem;
+  background: #eef6e9;
+}
+.stc-routes dd,
+.stc-values dd {
+  margin: 0;
+  color: #244438;
+  font-weight: 650;
+}
+.stc-routes dd {
+  font-family: Consolas, monospace;
+  font-size: 0.88rem;
+  overflow-wrap: anywhere;
+}
+.stc-values {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 5.2rem), 1fr));
+}
+.stc-values > div {
+  background: #edf3e4;
+  padding: 0.35rem 0.45rem;
+  border-radius: 0.25rem;
+}
+.stc-values > div:last-child {
+  background: #d8eac8;
+}
+.stc-diagnosis {
+  padding: 0.65rem 0.85rem;
+  background: #f8efdb;
+  border: 1px solid #d6c5a2;
+  border-radius: 0.4rem;
+  margin: 0.75rem 0;
+}
+.stc-steps ol {
+  padding-left: 1.3rem;
+  margin: 0.45rem 0;
+}
+.stc-steps li {
+  padding: 0.17rem 0;
+  color: #304c3e;
+}
+.stc .stc-proof {
+  margin: 0.55rem 0 0;
+}
+.stc-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.8rem 0 0.5rem;
+}
+.stc-actions button {
+  border: 1px solid #72947b;
+  border-radius: 0.4rem;
+  color: #1f4e36;
+  background: #eef5e9;
+  padding: 0.48rem 0.75rem;
+  font: inherit;
+  font-weight: 650;
+  cursor: pointer;
+}
+.stc-actions button[data-stage-action="practice"] {
+  background: #245c41;
+  color: #fff;
+}
+.stc-actions button:disabled {
+  opacity: 0.52;
+  cursor: default;
+}
+.stc :focus-visible {
+  outline: 3px solid #3761af;
+  outline-offset: 2px;
+}
+.stc-foot,
+.stc-status {
+  display: block;
+  font-size: 0.85rem;
+  color: #48604c;
+}
+.stc :where(.stc-top, .stc-body) > * {
+  min-width: 0;
+}
+@media (max-width: 540px) {
+  .stc-top,
+  .stc-body {
+    grid-template-columns: 1fr;
+  }
+  .stc-card,
+  .stc-steps {
+    padding: 0.7rem;
+  }
+  .stc-values {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

@@ -1,0 +1,37 @@
+WEBVTT
+
+00:00:00.300 --> 00:00:03.051
+Mount the batch steam peeler and skin remover.
+
+00:00:03.121 --> 00:00:07.551
+Each batch needs a cycle request and a matching
+completion before discharge.
+
+00:00:07.761 --> 00:00:14.726
+Connect vessel cycle complete to DI03, then
+connect DO03 to the batch sequencer request.
+
+00:00:14.796 --> 00:00:17.408
+These are two distinct digital signals.
+
+00:00:17.618 --> 00:00:21.010
+Set the model exposure timer to 16 seconds.
+
+00:00:21.080 --> 00:00:24.854
+The expiry of that timer alone does not prove
+completion.
+
+00:00:25.064 --> 00:00:27.483
+Inject cycle completion absent.
+
+00:00:27.553 --> 00:00:32.833
+Keep the batch identity open and observe
+discharge held while its request is outstanding.
+
+00:00:33.043 --> 00:00:36.434
+Confirm the completed batch and restore the
+handshake.
+
+00:00:36.504 --> 00:00:42.762
+The worked batch delivers 921.2 kilograms of
+peeled potatoes to cutting.

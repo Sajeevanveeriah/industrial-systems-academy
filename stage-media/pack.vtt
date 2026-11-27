@@ -1,0 +1,37 @@
+WEBVTT
+
+00:00:00.300 --> 00:00:05.107
+The multihead weigher and bagger convert frozen
+loose fries into sealed bags.
+
+00:00:05.177 --> 00:00:07.948
+The checkweigher supplies the evidence for
+release.
+
+00:00:08.158 --> 00:00:14.012
+Connect checkweigher net weight to AI09 and the
+bag discharge request to DO09.
+
+00:00:14.082 --> 00:00:17.712
+A discharge request cannot substitute for a
+valid weight.
+
+00:00:17.922 --> 00:00:21.528
+Set the training net bag target to 1,000 grams.
+
+00:00:21.598 --> 00:00:24.748
+Use net product mass for the bag calculation.
+
+00:00:24.958 --> 00:00:27.277
+Inject the invalid checkweigher signal.
+
+00:00:27.347 --> 00:00:31.276
+Hold bag release until a reference pack verifies
+the measurement.
+
+00:00:31.486 --> 00:00:34.517
+Restore checkweight and verify a reference pack.
+
+00:00:34.587 --> 00:00:44.509
+From 744.7 kilograms, the model records 744
+whole bags and a 0.7 kilogram remainder.

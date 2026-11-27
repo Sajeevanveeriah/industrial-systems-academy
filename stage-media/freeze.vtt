@@ -1,0 +1,40 @@
+WEBVTT
+
+00:00:00.300 --> 00:00:04.070
+The fluidised-bed belt freezer receives
+par-fried strips.
+
+00:00:04.140 --> 00:00:08.957
+Its training release depends on both cold-zone
+residence and a fresh zone measurement.
+
+00:00:09.167 --> 00:00:15.145
+Connect return-air temperature to AI08 and the
+freezer belt speed demand to AO08.
+
+00:00:15.215 --> 00:00:18.657
+Check the value, quality and sample time
+together.
+
+00:00:18.867 --> 00:00:22.191
+Set the training cold-zone residence to 12
+minutes.
+
+00:00:22.261 --> 00:00:25.575
+This is the simulator target for the fictional
+recipe.
+
+00:00:25.785 --> 00:00:28.074
+Inject a stale return-air sample.
+
+00:00:28.144 --> 00:00:32.793
+The display may still show a plausible number
+while the current condition is unknown.
+
+00:00:33.003 --> 00:00:36.353
+Restore a fresh air measurement and confirm zone
+readiness.
+
+00:00:36.423 --> 00:00:42.848
+The model carries 744.7 kilograms through this
+stage without a mass adjustment.

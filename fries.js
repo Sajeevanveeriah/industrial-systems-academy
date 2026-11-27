@@ -5,13 +5,29 @@
     L = window.FryLedger;
   const $ = (id) => document.getElementById(id),
     root = $("workspace");
-  const mode = new URLSearchParams(location.search).get("mode");
-  const kind = ["solved", "worked", "fitout", "batch"].includes(mode)
+  const query = new URLSearchParams(location.search);
+  const mode = query.get("mode");
+  const stageMode = mode === "practice" || mode === "stageworked";
+  const targetIndex = Math.max(
+    0,
+    P.stages.findIndex((s) => s.id === query.get("stage")),
+  );
+  const targetId = P.stages[targetIndex].id;
+  const catalogue = window.StageCourseFiles?.catalogue || "stage-lessons.html";
+  const kind = [
+    "solved",
+    "worked",
+    "fitout",
+    "batch",
+    "stageworked",
+    "practice",
+  ].includes(mode)
     ? mode
     : "build";
-  const readOnly = kind === "worked",
-    key =
-      kind === "build"
+  const readOnly = kind === "worked" || kind === "stageworked",
+    key = stageMode
+      ? "signalworks.fries.stage.v1." + targetId
+      : kind === "build"
         ? "signalworks.fries.v2.build"
         : "signalworks.fries.v1." + (kind === "fitout" ? "build" : kind);
   const stages = P.stages,
@@ -28,8 +44,10 @@
           "'": "&#39;",
         })[c],
     );
-  function blank(n = 1) {
-    const seeded = kind === "solved" || kind === "worked";
+  function blank(
+    n = stageMode ? (kind === "stageworked" ? 301 : 201) + targetIndex : 1,
+  ) {
+    const seeded = kind === "solved" || kind === "worked" || stageMode;
     const installed = seeded || kind === "batch";
     const ledger = seeded ? L.solved() : L.empty();
     if (seeded) ledger.lot = "POT-" + (2600 + n);
@@ -41,6 +59,7 @@
       batchId: "FRY-" + (1000 + n),
       orderId: "PO-" + (7100 + n),
       initialKg: 1000,
+      ...(stageMode ? { shiftDate: "2026-01-01" } : {}),
       installation: installed ? I.solved() : I.empty(),
       configs: stages.map((_, i) =>
         installed ? P.solvedStage(i) : P.emptyStage(i),
@@ -178,19 +197,38 @@
     saved = null,
     stale = false,
     canSave = true;
-  if (readOnly) {
+  function seedStation() {
+    const until = kind === "stageworked" ? targetIndex + 1 : targetIndex;
+    for (let i = 0; i < until; i++) {
+      state.index = i;
+      state.progress = 1;
+      book(state);
+      state.events[i].origin = "Worked setup";
+    }
+    state.index = targetIndex;
+    state.progress = readOnly ? 1 : 0;
+    if (!readOnly) state.configs[targetIndex] = P.emptyStage(targetIndex);
+    state.exercise = targetId;
+  }
+  if (stageMode) seedStation();
+  else if (readOnly) {
     for (let i = 0; i < stages.length; i++) {
       state.index = i;
       state.progress = 1;
       sample("Worked example · stage complete");
       book(state);
     }
-  } else
+  }
+  if (!readOnly)
     try {
       saved = localStorage.getItem(key);
       const record = JSON.parse(saved);
       if (
         record?.version === 1 &&
+        (!stageMode ||
+          (record.exercise === targetId &&
+            record.index === targetIndex &&
+            record.batchId === state.batchId)) &&
         record.configs?.length === stages.length &&
         Array.isArray(record.events) &&
         record.index >= 0 &&
@@ -203,6 +241,8 @@
   if (!state.journeyVersion) adoptPrior(state, true);
   if (!state.site)
     state.site = kind === "build" ? SiteBuild.empty() : SiteBuild.solved();
+  let lessonReader = null,
+    replayFrame = 0;
   let facilityBench = null,
     siteBench = null,
     avevaPanel = null;
@@ -399,6 +439,7 @@
   }
   function transferPermitted() {
     return (
+      !stageMode &&
       SiteBuild.check(state.site).ok &&
       linked(state).ok &&
       !readOnly &&
@@ -569,6 +610,10 @@
       ? "Recorded or in-process recipe. Inspect the configuration here; future stages can be commissioned before their batch arrives."
       : "Mount the machine, connect the two I/O paths, set the recipe and prove fault recovery. Or load the worked station.";
     draw();
+    if (stageMode) {
+      updateCoach();
+      return;
+    }
     avevaPanel?.update();
     const stepKey = [
       state.batchId,
@@ -586,6 +631,10 @@
     }
   }
   function teardown() {
+    cancelAnimationFrame(replayFrame);
+    replayFrame = 0;
+    lessonReader?.destroy();
+    lessonReader = null;
     facilityBench?.destroy();
     facilityBench = null;
     avevaPanel?.destroy();
@@ -600,8 +649,17 @@
     }
   }
   function inspect(index, focus = false) {
+    if (stageMode && index !== targetIndex) {
+      notice =
+        "This exercise controls " +
+        stages[targetIndex].name +
+        ". Choose another lesson from the catalogue.";
+      update();
+      return;
+    }
     selected = index;
-    window.PlantPath.context($("field-instruction"), "floor", "", index);
+    if (!stageMode)
+      window.PlantPath.context($("field-instruction"), "floor", "", index);
     $("picked").textContent = "Inspecting " + stages[index].name + ".";
     $("station-config").replaceChildren();
     P.mount($("station-config"), index, state.configs[index], (config) => {
@@ -610,6 +668,17 @@
       notice = "Station settings saved.";
       update();
     });
+    if (!stageMode) {
+      let lessonLink = $("stage-reader-link");
+      if (!lessonLink) {
+        lessonLink = document.createElement("a");
+        lessonLink.id = "stage-reader-link";
+        $("stage-example").after(lessonLink);
+      }
+      lessonLink.href = stageUrl(index, "practice", "lesson");
+      lessonLink.textContent =
+        "Read or watch the " + stages[index].name.toLowerCase() + " lesson →";
+    }
     $("inspect-title").textContent = stages[index].name + " · station setup";
     update();
     if (focus) $("inspect-title").scrollIntoView({ block: "nearest" });
@@ -693,6 +762,12 @@
       const widgets = $("operator").closest("details");
       widgets.open = false;
       root.querySelector(".dock").append(widgets);
+    }
+    if (stageMode) {
+      mountPracticeFloor();
+      inspect(targetIndex);
+      scene.focusStation(targetIndex);
+      return;
     }
     const station = document.createElement("section");
     station.id = "batch-aveva";
@@ -786,6 +861,217 @@
     target.tabIndex = -1;
     target.focus({ preventScroll: true });
   }
+  function stageUrl(i, mode, section) {
+    const u = new URL(location.href);
+    u.search = "";
+    u.searchParams.set("mode", mode);
+    u.searchParams.set("stage", stages[i].id);
+    u.hash = section + "/" + stages[i].id;
+    return u.href;
+  }
+  function restartStation() {
+    if (
+      kind !== "practice" ||
+      stale ||
+      !confirm(
+        "Restart only this station attempt? Your other stages and full plant stay saved.",
+      )
+    )
+      return;
+    stop();
+    state = blank();
+    seedStation();
+    selected = targetIndex;
+    notice = "Station attempt restarted.";
+    save();
+    render();
+  }
+  function lesson(i) {
+    const go = (mode, section) => location.assign(stageUrl(i, mode, section));
+    lessonReader = window.StageCourse.mount(root, i, {
+      mode: kind,
+      mediaUrls: window.StageCourseFiles?.media,
+      openPractice: () => go("practice", "floor"),
+      openWorked: () => go("stageworked", "floor"),
+      openGuide: () => {
+        location.hash = "guide/process";
+      },
+      practiceStatus:
+        stageMode && !readOnly
+          ? {
+              ok: complete(),
+              why: complete()
+                ? "Station run recorded."
+                : P.check(i, state.configs[i]).why,
+            }
+          : undefined,
+      resetPractice: kind === "practice" ? restartStation : undefined,
+    });
+  }
+  function mountPracticeFloor() {
+    const panel = root.querySelector(".panelset"),
+      editor = root.querySelector(".stage-editor"),
+      dock = root.querySelector(".dock");
+    panel.append(editor);
+    panel.after(dock);
+    for (const a of dock.querySelectorAll('a[href^="#"]')) a.hidden = true;
+
+    const bar = document.createElement("section");
+    bar.id = "practice-coach";
+    bar.className = "box";
+    bar.innerHTML =
+      '<div class="practice-links"><a data-course-link="reader">Read / watch lesson</a><a data-course-link="compare"></a><a data-course-link="catalogue">All ten stages</a></div><h2></h2><p data-coach-step role="status"></p><p data-coach-evidence></p><div class="practice-links"><button type="button" id="worked-replay">Replay the worked operation</button><a data-course-link="next"></a><button type="button" id="restart-station">Restart this attempt</button></div>';
+    root.prepend(bar);
+    const item = (k) => bar.querySelector('[data-course-link="' + k + '"]');
+    item("reader").href = stageUrl(targetIndex, "practice", "lesson");
+    item("compare").href = stageUrl(
+      targetIndex,
+      readOnly ? "practice" : "stageworked",
+      "floor",
+    );
+    item("compare").textContent = readOnly
+      ? "Return to my attempt"
+      : "Inspect worked example";
+    item("catalogue").href = catalogue;
+    item("next").href =
+      targetIndex < stages.length - 1
+        ? stageUrl(targetIndex + 1, "practice", "lesson")
+        : catalogue;
+    item("next").textContent =
+      targetIndex < stages.length - 1
+        ? "Next lesson: " + stages[targetIndex + 1].name + " →"
+        : "Return to all lessons →";
+    $("worked-replay").hidden = !readOnly;
+    $("worked-replay").onclick = () => {
+      const button = $("worked-replay");
+      button.disabled = true;
+      const since = performance.now(),
+        event = state.events[targetIndex],
+        installation = state.configs.map((c, i) => P.isInstalled(i, c));
+      function show(now) {
+        const t = Math.min(1, (now - since) / 4800);
+        scene.draw({
+          index: targetIndex,
+          progress: t,
+          running: t < 1,
+          batch: state.batchId,
+          installed: installation,
+        });
+        $("bar").value = t;
+        $("percent").textContent = Math.round(t * 100) + "%";
+        $("flags").textContent = t < 1 ? "Example replay" : "Recorded";
+        I.operator($("operator"), state.installation, {
+          ...tags(),
+          mass: t < 1 ? event.inputKg : event.outputKg,
+          progress: Math.round(t * 100),
+          running: t < 1,
+        });
+        if (t < 1) replayFrame = requestAnimationFrame(show);
+        else {
+          replayFrame = 0;
+          button.disabled = false;
+          update();
+        }
+      }
+      replayFrame = requestAnimationFrame(show);
+    };
+    $("restart-station").hidden = readOnly;
+    $("restart-station").onclick = restartStation;
+    $("stage-example").hidden = true;
+    $("recipe-state").textContent = readOnly
+      ? "Inspect the completed configuration and compare its signals and recovery proof with your own."
+      : "Configure this station using the guide. Inspecting the separate worked example preserves your attempt.";
+    root
+      .querySelector(".ophead")
+      .setAttribute("aria-label", "Station exercise");
+    $("route").hidden = true;
+    $("transfer").hidden = true;
+    const h = bar.querySelector("h2");
+    h.textContent =
+      (readOnly ? "Worked example · " : "Your task · ") +
+      stages[targetIndex].name;
+  }
+  function updateCoach() {
+    const bar = $("practice-coach");
+    if (!bar) return;
+    const i = targetIndex,
+      c = state.configs[i],
+      s = stages[i],
+      e = state.events[i];
+    const good = P.check(i, c).ok;
+    let instruction;
+    if (e)
+      instruction = readOnly
+        ? "Compare the mounted device, terminal pairs and recipe below with your own attempt."
+        : "Stage passed. Your verified configuration ran on the 3D plant and its MES record is saved.";
+    else if (!P.isInstalled(i, c))
+      instruction =
+        "1. Choose " +
+        s.machine +
+        " in the equipment inventory and mount it in the bay.";
+    else if (c.sensor !== s.sensor)
+      instruction =
+        "2. Follow the I/O schedule and connect the field sensor to " +
+        s.sensor +
+        ".";
+    else if (c.actuator !== s.actuator)
+      instruction =
+        "3. Connect the controller output to the actuator for " +
+        s.actuator +
+        ".";
+    else if (
+      c.setpoint === "" ||
+      !Number.isFinite(Number(c.setpoint)) ||
+      Number(c.setpoint) < s.min ||
+      Number(c.setpoint) > s.max
+    )
+      instruction =
+        "4. Set " +
+        s.parameter +
+        " to the worked target of " +
+        s.target +
+        " " +
+        s.unit +
+        " and apply the field by leaving it.";
+    else if (!good)
+      instruction =
+        c.faultState === "tripped"
+          ? "5. Investigate the injected fault. Choose the recovery action and verify the equipment is ready."
+          : "5. Inject the station fault and observe the hold. Then prove recovery.";
+    else
+      instruction = active
+        ? "6. Watch the material pass through the machine. Hold or resume if you need to inspect a change."
+        : "6. Start this operation or step it in 25% increments. Check its output against the worked mass balance.";
+    $("recipe-state").textContent = readOnly
+      ? "Recorded configuration and recovery proof."
+      : "Mount and wire the machine, set the recipe, then test the hold and recovery.";
+    const step = bar.querySelector("[data-coach-step]");
+    if (step.textContent !== instruction) step.textContent = instruction;
+    const input =
+      e?.inputKg ?? state.events[i - 1]?.outputKg ?? state.initialKg;
+    const evidence = bar.querySelector("[data-coach-evidence]");
+    evidence.textContent = e
+      ? e.id +
+        " · " +
+        fmt.format(input) +
+        " kg input + " +
+        fmt.format(e.addedKg) +
+        " kg added − " +
+        fmt.format(e.removedKg) +
+        " kg removed = " +
+        fmt.format(e.outputKg) +
+        " kg output. " +
+        e.note
+      : "Incoming batch " +
+        state.batchId +
+        " · " +
+        fmt.format(input) +
+        " kg. " +
+        (i
+          ? "Prior operations are supplied as worked records for this exercise."
+          : "This is the first operation in the example batch.");
+    bar.querySelector('[data-course-link="next"]').hidden = !e;
+  }
   function render() {
     if (stale) return;
     if (active) hold("Paused on leaving the plant floor.");
@@ -795,6 +1081,7 @@
     if (
       ![
         "site",
+        "lesson",
         "guide",
         "floor",
         "rack",
@@ -809,12 +1096,31 @@
     )
       view =
         kind === "build" ? "site" : kind === "batch" ? "momentum" : "floor";
+    if (stageMode && !["lesson", "floor", "guide"].includes(view))
+      view = "lesson";
     for (const a of document.querySelectorAll(".tabs a")) {
       if (a.hash === "#" + view) a.setAttribute("aria-current", "page");
       else a.removeAttribute("aria-current");
     }
     const journey = $("batch-route");
     journey.replaceChildren();
+    if (stageMode) {
+      let back = $("exercise-back");
+      if (!back) {
+        back = document.createElement("p");
+        back.id = "exercise-back";
+        $("workspace").before(back);
+      }
+      back.replaceChildren();
+      back.hidden = view !== "guide";
+      if (!back.hidden) {
+        const a = document.createElement("a");
+        a.href = stageUrl(targetIndex, kind, "floor");
+        a.textContent =
+          "Return to " + stages[targetIndex].name.toLowerCase() + " station →";
+        back.append(a);
+      }
+    }
     const guide = $("field-instruction");
     guide.replaceChildren();
     if (view === "site") {
@@ -889,12 +1195,23 @@
       });
       return;
     }
+    if (view === "lesson") {
+      const i = stageMode
+        ? targetIndex
+        : Math.max(
+            0,
+            stages.findIndex((s) => s.id === detail),
+          );
+      lesson(i);
+      return;
+    }
     const stageIndex = stages.findIndex((stage) => stage.id === detail);
     if (view === "floor") selected = stageIndex >= 0 ? stageIndex : state.index;
     window.PlantPath.context(guide, view, detail, selected);
     if (view === "floor") {
+      if (stageMode) selected = targetIndex;
       floor();
-      if (stageIndex >= 0) scene?.focusStation(stageIndex);
+      if (!stageMode && stageIndex >= 0) scene?.focusStation(stageIndex);
       return;
     }
     if (view === "history") {
@@ -1066,10 +1383,28 @@
       panel.addEventListener("click", () => queueMicrotask(lock));
     }
   }
+  if (stageMode) {
+    document.body.dataset.exercise = kind;
+    $("mode").replaceChildren(
+      new Option("Your station attempt", "practice"),
+      new Option("Inspect worked station", "stageworked"),
+    );
+    document.querySelector(".mast h1").textContent = stages[targetIndex].name;
+    document.querySelector(".mast h1+p").textContent =
+      "One stage of the French fry plant. Your practice settings are saved separately for each stage.";
+  }
+  document
+    .querySelectorAll('a[href="stage-lessons.html"]')
+    .forEach((a) => (a.href = catalogue));
   $("mode").value = kind;
   $("mode").onchange = (e) => {
+    if (stageMode) {
+      location.assign(stageUrl(targetIndex, e.target.value, "floor"));
+      return;
+    }
     const u = new URL(location.href);
     u.searchParams.set("mode", e.target.value);
+    u.searchParams.delete("stage");
     u.hash =
       e.target.value === "batch"
         ? "momentum"
@@ -1083,6 +1418,10 @@
     location.href = u.href;
   };
   $("mode-note").textContent = {
+    practice:
+      "Read or watch first, then install, wire and prove this machine on the plant.",
+    stageworked:
+      "Read-only example with the completed event. Your own attempt stays saved.",
     batch:
       "Installed plant with an empty material receipt and schedule. Start by weighing the delivery in Momentum. All four workstations share this batch.",
     fitout:

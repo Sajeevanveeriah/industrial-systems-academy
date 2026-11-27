@@ -1,0 +1,38 @@
+WEBVTT
+
+00:00:00.300 --> 00:00:02.968
+Mount the continuous fryer and oil filter.
+
+00:00:03.038 --> 00:00:07.786
+The model accounts separately for oil added and
+mass removed as the strips pass through.
+
+00:00:07.996 --> 00:00:14.063
+Connect the fryer conveyor encoder to AI07 and
+belt speed demand to AO07.
+
+00:00:14.133 --> 00:00:17.321
+The recipe controls residence in the training
+model.
+
+00:00:17.531 --> 00:00:20.832
+Set model belt residence to 45 seconds.
+
+00:00:20.902 --> 00:00:25.097
+Keep the oil circulation permissive visible
+during the fault exercise.
+
+00:00:25.307 --> 00:00:27.884
+Inject loss of oil circulation proof.
+
+00:00:27.954 --> 00:00:32.359
+A healthy belt speed signal does not establish
+that the oil is circulating.
+
+00:00:32.569 --> 00:00:35.191
+Restore circulation proof before feed.
+
+00:00:35.261 --> 00:00:48.064
+The worked mass balance adds 37.866 kilograms
+and removes 134.635 kilograms, leaving 744.7
+kilograms.

@@ -2,6 +2,11 @@ import { copyFile, mkdir, readdir } from "node:fs/promises";
 
 const assets = [
   "index.html",
+  "stage-lessons.html",
+  "stage-handbook.pdf",
+  "stage-narration.js",
+  "stage-course.js",
+  "stage-course.css",
   "study.html",
   "study.css",
   "study-link.js",
@@ -69,7 +74,7 @@ const assets = [
 const output = new URL("./dist/", import.meta.url);
 await mkdir(output, { recursive: true });
 const existing = await readdir(output);
-if (existing.some((file) => !assets.includes(file))) {
+if (existing.some((file) => file !== "stage-media" && !assets.includes(file))) {
   throw new Error(
     "dist contains unexpected files. Use a clean checkout to build the public site.",
   );
@@ -77,4 +82,25 @@ if (existing.some((file) => !assets.includes(file))) {
 for (const file of assets) {
   await copyFile(new URL(file, import.meta.url), new URL(file, output));
 }
-console.log(`Packaged ${assets.length} site assets in dist/`);
+const stageFolder = new URL("stage-media/", output);
+await mkdir(stageFolder, { recursive: true });
+const films = [
+  "receive",
+  "wash",
+  "peel",
+  "cut",
+  "blanch",
+  "dry",
+  "fry",
+  "freeze",
+  "pack",
+  "dispatch",
+].flatMap((id) => [id + ".mp4", id + ".vtt"]);
+if ((await readdir(stageFolder)).some((f) => !films.includes(f)))
+  throw Error("Unexpected files in staged media directory.");
+for (const film of films)
+  await copyFile(
+    new URL("stage-media/" + film, import.meta.url),
+    new URL(film, stageFolder),
+  );
+console.log(`Packaged ${assets.length + films.length} site assets in dist/`);

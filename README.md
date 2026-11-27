@@ -1,5 +1,7 @@
 # Signal Works | Industrial Systems Academy
 
+[Read, watch and practise each fry stage](https://industrial-systems-academy.pages.dev/stage-lessons). Ten stations each have a short film with English captions, a transcript, hardware and software notes, a worked example and an independent attempt on the actual 3D plant floor. Open `stage-lessons.html` locally with its adjacent release files for the offline version. Each station supplies the upstream batch and holds the learner's machine empty until it is mounted, wired, configured and proved. The printable handbook gives one page per station. Run `node tests/stage-course.cjs` to verify all ten routes and operating results.
+
 Start with [How a fry plant works](https://industrial-systems-academy.pages.dev/study). Read five illustrated chapters, watch the narrated film with English captions, or download the five-page study notes. The chapters use a single training batch to connect material flow, physical and logical network drawings, controller feedback, scheduling and stock reconciliation. Each chapter includes a worked diagnosis and an explained checkpoint before its practical exercise. Open `study.html` directly for offline study with the other release files in the same folder.
 
 ## French fry plant
