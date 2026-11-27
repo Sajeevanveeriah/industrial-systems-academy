@@ -501,6 +501,23 @@ async function main() {
         () => document.documentElement.scrollWidth <= innerWidth,
       ),
     );
+    await p.goto(new URL("fries.html?mode=solved#floor/receive", base).href);
+    await p.locator("#step").click();
+    const liveBatch = await p.evaluate(() =>
+      JSON.parse(localStorage.getItem("signalworks.fries.v1.solved")),
+    );
+    await p.locator("#stage-reader-link").click();
+    assert.match(p.url(), /mode=solved#lesson/);
+    await p.locator('[data-stage-action="worked"]').click();
+    await p.locator('[data-course-link="compare"]').click();
+    await p.locator("#bar").waitFor();
+    assert.match(p.url(), /mode=solved#floor/);
+    assert.deepEqual(
+      await p.evaluate(() =>
+        JSON.parse(localStorage.getItem("signalworks.fries.v1.solved")),
+      ),
+      liveBatch,
+    );
     assert.deepEqual(errors, []);
     console.log({
       base,

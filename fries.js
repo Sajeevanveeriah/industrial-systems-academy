@@ -675,7 +675,7 @@
         lessonLink.id = "stage-reader-link";
         $("stage-example").after(lessonLink);
       }
-      lessonLink.href = stageUrl(index, "practice", "lesson");
+      lessonLink.href = "#lesson/" + stages[index].id;
       lessonLink.textContent =
         "Read or watch the " + stages[index].name.toLowerCase() + " lesson →";
     }
@@ -887,12 +887,31 @@
     render();
   }
   function lesson(i) {
-    const go = (mode, section) => location.assign(stageUrl(i, mode, section));
+    const sourceMode = [
+      "build",
+      "fitout",
+      "batch",
+      "solved",
+      "worked",
+    ].includes(kind)
+      ? kind
+      : null;
+    function openWorked() {
+      const u = new URL(stageUrl(i, "stageworked", "floor"));
+      if (sourceMode) u.searchParams.set("returnPlant", sourceMode);
+      location.assign(u.href);
+    }
     lessonReader = window.StageCourse.mount(root, i, {
       mode: kind,
       mediaUrls: window.StageCourseFiles?.media,
-      openPractice: () => go("practice", "floor"),
-      openWorked: () => go("stageworked", "floor"),
+      practiceLabel: stageMode
+        ? "Practise this station"
+        : "Return to this station on my batch",
+      openPractice: () =>
+        stageMode
+          ? location.assign(stageUrl(i, "practice", "floor"))
+          : goTo("floor/" + stages[i].id),
+      openWorked,
       openGuide: () => {
         location.hash = "guide/process";
       },
@@ -932,6 +951,20 @@
     item("compare").textContent = readOnly
       ? "Return to my attempt"
       : "Inspect worked example";
+    const originMode = query.get("returnPlant");
+    if (
+      readOnly &&
+      ["build", "fitout", "batch", "solved", "worked"].includes(originMode)
+    ) {
+      const u = new URL(location.href);
+      u.search = "";
+      u.searchParams.set("mode", originMode);
+      u.hash = "floor/" + targetId;
+      item("compare").href = u.href;
+      item("compare").textContent = "Return to my plant batch";
+      u.hash = "lesson/" + targetId;
+      item("reader").href = u.href;
+    }
     item("catalogue").href = catalogue;
     item("next").href =
       targetIndex < stages.length - 1

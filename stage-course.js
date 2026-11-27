@@ -218,7 +218,11 @@
       if (!b.disabled) b.addEventListener("click", () => callback(index));
       group.append(b);
     }
-    add("practice", "Practise this station", opts.openPractice);
+    add(
+      "practice",
+      opts.practiceLabel || "Practise this station",
+      opts.openPractice,
+    );
     add("worked", "Inspect worked station", opts.openWorked);
     if (typeof opts.openGuide === "function")
       add("guide", "Open plant guide", opts.openGuide);
