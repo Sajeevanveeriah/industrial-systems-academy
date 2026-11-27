@@ -2,6 +2,12 @@ import { copyFile, mkdir, readdir } from "node:fs/promises";
 
 const assets = [
   "index.html",
+  "study.html",
+  "study.css",
+  "study-link.js",
+  "study-film.mp4",
+  "study-film.vtt",
+  "study-notes.pdf",
   "app.js",
   "style.css",
   "lessons.js",

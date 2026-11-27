@@ -1,5 +1,7 @@
 # Signal Works | Industrial Systems Academy
 
+Start with [How a fry plant works](https://industrial-systems-academy.pages.dev/study). Read five illustrated chapters, watch the narrated film with English captions, or download the five-page study notes. The chapters use a single training batch to connect material flow, physical and logical network drawings, controller feedback, scheduling and stock reconciliation. Each chapter includes a worked diagnosis and an explained checkpoint before its practical exercise. Open `study.html` directly for offline study with the other release files in the same folder.
+
 ## French fry plant
 
 The [facility services workbench](https://industrial-systems-academy.pages.dev/fries?mode=solved#facility) covers office and staff facilities, raw storage, process support and water services. Use it to distinguish an installed endpoint from an accepted service. A learner can commission fictional cabinet connections, check power and link readbacks, and hand over each area. The exercise uses an independent training layout.

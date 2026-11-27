@@ -1,0 +1,167 @@
+WEBVTT
+
+00:00:00.400 --> 00:00:08.917
+A truck delivers one thousand kilograms of
+potatoes. The supplier calls this lot
+POT-2601.
+
+00:00:09.092 --> 00:00:13.049
+The plant assigns production batch FRY-1001.
+
+00:00:13.094 --> 00:00:22.273
+Keep both identifiers: one identifies the
+incoming material, the other the work
+performed.
+
+00:00:22.448 --> 00:00:25.861
+We will follow that link from receiving
+through control,
+
+00:00:25.906 --> 00:00:28.640
+packing and inventory reconciliation.
+
+00:00:29.465 --> 00:00:33.980
+The receiving operator matches the delivery to
+its purchase reference
+
+00:00:34.025 --> 00:00:38.284
+and checks gross weight minus tare against the
+measured net mass.
+
+00:00:38.459 --> 00:00:45.019
+The manufacturing execution system, or MES,
+records the supplier lot on hold.
+
+00:00:45.064 --> 00:00:49.754
+A matching inspection result and confirmed
+put-away release the material.
+
+00:00:49.929 --> 00:00:53.378
+Advanced planning and scheduling, or APS,
+
+00:00:53.423 --> 00:00:57.128
+can then reserve line capacity for that
+released order.
+
+00:00:57.173 --> 00:00:59.938
+A reservation does not start the conveyor.
+
+00:01:00.763 --> 00:01:03.482
+The physical plan answers "where?"
+
+00:01:03.527 --> 00:01:07.796
+It locates the detector and the controller
+input at the packing cell.
+
+00:01:07.841 --> 00:01:10.858
+Check the actual connection at the equipment.
+
+00:01:11.033 --> 00:01:14.664
+The logical view asks "what must communicate?"
+
+00:01:14.709 --> 00:01:20.333
+The controller sends the carton-present tag
+through a switch to the supervisory server.
+
+00:01:20.508 --> 00:01:23.439
+A diagram line does not prove the cable,
+
+00:01:23.484 --> 00:01:27.390
+the received optical light level or a healthy
+application.
+
+00:01:27.435 --> 00:01:33.832
+Check the link and optical reading, then
+verify tag value, quality and sample time.
+
+00:01:34.657 --> 00:01:41.645
+The controller requests conveyor motion. A run
+command means the program asked for motion.
+
+00:01:41.690 --> 00:01:45.308
+The drive feedback tells us what actually
+happened.
+
+00:01:45.483 --> 00:01:47.821
+With command on and feedback off,
+
+00:01:47.866 --> 00:01:53.369
+the operator checks the permissives and the
+drive status before assuming the belt moved.
+
+00:01:53.544 --> 00:02:00.325
+The supervisory control and data acquisition
+system, or SCADA, displays both signals.
+
+00:02:00.370 --> 00:02:03.515
+The historian records their time sequence.
+
+00:02:04.340 --> 00:02:09.179
+Look at two samples. The first detector reads
+zero,
+
+00:02:09.224 --> 00:02:16.178
+with good quality and a current timestamp.
+That is evidence of no carton at that sample.
+
+00:02:16.353 --> 00:02:22.066
+The second display also shows zero, but its
+timestamp has stopped advancing.
+
+00:02:22.111 --> 00:02:24.778
+The current detector state is unknown.
+
+00:02:24.953 --> 00:02:31.152
+Compare the source and server timestamps,
+communication quality and last change.
+
+00:02:31.197 --> 00:02:34.841
+A steady process can still produce fresh
+samples.
+
+00:02:35.666 --> 00:02:38.811
+The packing scale records seven hundred
+
+00:02:38.856 --> 00:02:43.747
+and forty-four kilograms of finished fries
+against FRY-1001.
+
+00:02:43.922 --> 00:02:48.599
+That is a packed-to-raw ratio of seventy-four
+point four per cent.
+
+00:02:48.644 --> 00:02:51.653
+The difference is not automatically scrap.
+
+00:02:51.828 --> 00:02:58.474
+Reconcile the stage records: potato input plus
+measured additions must equal packed output
+
+00:02:58.519 --> 00:03:03.637
+plus recorded removals. MES keeps the lot
+genealogy.
+
+00:03:04.462 --> 00:03:10.509
+The enterprise resource planning system, SAP,
+receives the packed-stock posting.
+
+00:03:10.554 --> 00:03:14.701
+Suppose the acknowledgement is lost after the
+posting succeeds.
+
+00:03:14.876 --> 00:03:19.391
+The interface retries the same event
+identifier and quantity.
+
+00:03:19.436 --> 00:03:24.414
+The receiver recognises the original posting
+and returns its acknowledgement.
+
+00:03:24.589 --> 00:03:28.694
+Inventory remains seven hundred and forty-four
+kilograms.
+
+00:03:28.739 --> 00:03:35.040
+Verify one movement, one event key, and a
+trace from finished batch back to supplier
+lot.
