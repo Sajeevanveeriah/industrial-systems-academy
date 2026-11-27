@@ -304,6 +304,7 @@ async function main() {
       .filter({ visible: true })
       .first()
       .click();
+    await p.locator("article.stage-card#receive").waitFor();
     const catalogue = p.url().split("#")[0];
     const durations = [],
       records = [];
