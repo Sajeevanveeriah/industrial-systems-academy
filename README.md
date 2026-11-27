@@ -2,6 +2,8 @@
 
 ## French fry plant
 
+[Production software labs](https://industrial-systems-academy.pages.dev/vendor-labs) cover Brighteye Momentum MES workflows, AVEVA InTouch and Historian workflows, and APS 4FACTORY scheduling. The lab page links the public implementation evidence by location and date. Each exercise uses fictional orders, signals or materials.
+
 Start the [guided greenfield build](https://industrial-systems-academy.pages.dev/fries?mode=build#site) on a vacant 24-cell parcel. Survey it, lay out six buildings, choose and place their foundations, frames and shell finishes, connect eight services, and prove vehicle access before handover. Select a completed building to enter its workshop. The [step-by-step guide](https://industrial-systems-academy.pages.dev/fries?mode=build#guide) explains the actions, purpose, acceptance checks and fault recovery from the plot survey to dispatch. The [worked site](https://industrial-systems-academy.pages.dev/fries?mode=worked#site) shows the accepted arrangement.
 
 The [French fry plant](https://industrial-systems-academy.pages.dev/fries?mode=solved#floor) follows a 1,000 kg training charge through receiving, washing, peeling, cutting, blanching, drying, par-frying, freezing, packing and dispatch. Start, hold or single-step each operation and release the batch to its next station. The operator screen, MES genealogy and simulated SAP postings share the batch and order identifiers.

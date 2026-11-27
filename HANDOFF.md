@@ -4,6 +4,8 @@ Signal Works is a standalone personal academy with eight curriculum tracks, four
 
 ## Maintain the site
 
+The production software lab hub links independently scoped public cases to browser exercises for Momentum, AVEVA and APS 4FACTORY. Preserve the distinction between the Dutch or Polish implementation evidence and the unverified Dooen application inventory. Publish only public references and fictional training scenarios.
+
 The primary build begins at `fries.html?mode=build#site`. The site, installation, recipe and batch share the new greenfield workspace record. The previous build-from-rack record remains available under `mode=fitout`. Keep plot coordinates consistent across the site model, renderer and guide: rows A to D north to south and columns 1 to 6 west to east. Site acceptance derives from the current construction and routing evidence; rework invalidates handover. The project guide maps site, installation and production status to the learner's next action.
 
 The homepage opens the French fry plant. The fry process, perspective scene, rack, installation and business ledger use local classic scripts. Preserve the manual and solved workspaces independently. The app saves each stage result under a stable batch/stage key, records recipe settings and masses, uses the compiled PLC route for transfers and holds motion across navigation or reload. Test the empty installation, solved operation and completed example against both direct local files and Cloudflare.

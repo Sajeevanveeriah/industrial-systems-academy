@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en-AU">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Production software labs | Signal Works</title>
+    <link rel="stylesheet" href="equipment.css" />
+    <style>
+      .products {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin: 1rem 0;
+      }
+      .products a {
+        background: white;
+        border: 1px solid var(--line);
+        border-radius: 0.5rem;
+        padding: 0.5rem 0.9rem;
+        text-decoration: none;
+      }
+      .products a[aria-current] {
+        background: var(--dark);
+        color: white;
+      }
+      .vendor-intro h1 {
+        font-size: clamp(2.2rem, 5vw, 4rem);
+        letter-spacing: -0.045em;
+        line-height: 1.05;
+        margin: 0.3rem 0;
+      }
+      .vendor-intro p {
+        max-width: 80ch;
+      }
+      .evidence {
+        margin: 1.2rem 0;
+        padding: 0.6rem 0.9rem;
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+      }
+      .evidence summary {
+        cursor: pointer;
+        font-weight: 650;
+      }
+      .evidence p {
+        max-width: 85ch;
+      }
+      #vwork {
+        min-width: 0;
+      }
+    </style>
+    <script defer src="vendor-momentum.js"></script>
+    <script defer src="vendor-aveva.js"></script>
+    <script defer src="vendor-aps.js"></script>
+    <script defer src="vendor-labs.js"></script>
+  </head>
+  <body>
+    <a class="skip" href="#vwork">Skip to lesson</a>
+    <header>
+      <div>
+        <a class="brand" href="index.html">∿ Signal Works.</a
+        ><a href="fries.html?mode=solved#floor">Fry plant ↗</a>
+      </div>
+    </header>
+    <main>
+      <section class="vendor-intro">
+        <p class="kicker">Industrial systems academy</p>
+        <h1>Production software labs</h1>
+        <p>
+          Choose a job to practise: release potato lots and run a work order,
+          respond to a conveyor alarm and investigate its history, or sequence
+          orders around line capacity and changeovers. The exercises use
+          fictional records and run locally in the browser.
+        </p>
+      </section>
+      <nav class="products" aria-label="Software lessons">
+        <a href="#momentum">Brighteye Momentum · MES</a
+        ><a href="#aveva">AVEVA · HMI and history</a
+        ><a href="#aps">APS 4FACTORY · scheduling</a>
+      </nav>
+      <div id="vwork" tabindex="-1">
+        <section
+          id="lesson-momentum"
+          aria-label="Momentum lessons"
+          hidden
+        ></section>
+        <section id="lesson-aveva" aria-label="AVEVA lessons" hidden></section>
+        <section
+          id="lesson-aps"
+          aria-label="APS scheduling lesson"
+          hidden
+        ></section>
+      </div>
+      <details class="evidence">
+        <summary>Where these products were documented</summary>
+        <p>
+          <strong>Brighteye Momentum.</strong> Farm Frites lists MES/Momentum
+          alongside SAP in an Oudenhoorn packing role. An implementation
+          participant identifies Brighteye as the product vendor and Agidens as
+          the implementation partner.
+          <a
+            href="https://www.werkenbijfarmfrites.com/vacatures/375727-vacature"
+            >Farm Frites role</a
+          >
+          ·
+          <a
+            href="https://nl.linkedin.com/posts/jreijnders_ik-ben-weer-beschikbaar-voor-een-nieuwe-opdracht-activity-7373668745795272704-Xx-c"
+            >Implementation account</a
+          >
+          ·
+          <a href="https://www.brighteye.be/momentum-modules"
+            >Brighteye product modules</a
+          >
+          ·
+          <a
+            href="https://www.agidens.com/news/agidens-and-brighteye-strengthen-their-partnership-in-the-netherlands/"
+            >Agidens on its integration role</a
+          >
+        </p>
+        <p>
+          <strong>AVEVA InTouch, Historian and Historian Client.</strong>
+          ASTOR's August 2018 case documents a Wonderware installation at Farm
+          Frites Poland in Lębork. Operators used InTouch and process
+          technologists used Historian and its client for longer-term analysis.
+          <a
+            href="https://www.astor.com.pl/biznes-i-produkcja/nowoczesna-integracja-warstwy-biznesowej-z-warstwa-automatyki-dzieki-rozwiazaniom-wonderware-obecnie-aveva-w-farm-frites-s-a/"
+            >ASTOR plant case</a
+          >
+        </p>
+        <p>
+          <strong>APS 4FACTORY.</strong> DSR's March 2026 account describes
+          production scheduling at the Lębork plant.
+          <a
+            href="https://www.dsr.com.pl/zastosowanie-rozwiazan-informatycznych-dsr-4factory-w-fabryce-farm-frites-poland/"
+            >DSR plant case</a
+          >
+        </p>
+        <p>
+          These sources cover different sites and dates. The sources reviewed do
+          not identify the Dooen software stack or establish which application
+          was recalled as beginning with ‘A’. Sources read 27 November 2026.
+        </p>
+      </details>
+    </main>
+    <footer>Signal Works · Industrial Systems Academy</footer>
+  </body>
+</html>
