@@ -2,6 +2,8 @@
 
 ## French fry plant
 
+The [facility services workbench](https://industrial-systems-academy.pages.dev/fries?mode=solved#facility) covers office and staff facilities, raw storage, process support and water services. Use it to distinguish an installed endpoint from an accepted service. A learner can commission fictional cabinet connections, check power and link readbacks, and hand over each area. The exercise uses an independent training layout.
+
 [Run one batch across Momentum, APS, AVEVA and SAP](https://industrial-systems-academy.pages.dev/fries?mode=batch#momentum). This workspace supplies a commissioned model plant and a draft order. Receive the actual potato lot from its weighbridge ticket, release quality stock, reserve a production slot, operate all ten stations from the InTouch-style panel, and reconcile the same movements in the SAP trace. The guide follows the current handover. The software names describe public workflows modelled for training; the combined interfaces and shift clock are fictional. Run `node tests/batch.cjs` for the end-to-end regression, optionally passing the deployed base URL.
 
 [Production software labs](https://industrial-systems-academy.pages.dev/vendor-labs) cover Brighteye Momentum MES workflows, AVEVA InTouch and Historian workflows, and APS 4FACTORY scheduling. The lab page links the public implementation evidence by location and date. Each exercise uses fictional orders, signals or materials.

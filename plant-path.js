@@ -121,7 +121,7 @@
     box.append(more);
     root.append(box);
   }
-  function mount(root, state, detail) {
+  function mount(root, state, detail, services) {
     root.replaceChildren();
     root.append(
       node("h2", "Plant build guide"),
@@ -204,6 +204,15 @@
     details.append(list);
     card.append(details);
     root.append(card);
+    if (services) {
+      const handover = node("section", undefined, "path-instruction");
+      handover.append(
+        node("strong", "Facility services handover"),
+        node("p", services.why),
+        link("Open the four area checks →", "#facility"),
+      );
+      root.append(handover);
+    }
     const guide = node("section");
     root.append(guide);
     const chapter = [

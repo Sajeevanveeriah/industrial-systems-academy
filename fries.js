@@ -203,7 +203,8 @@
   if (!state.journeyVersion) adoptPrior(state, true);
   if (!state.site)
     state.site = kind === "build" ? SiteBuild.empty() : SiteBuild.solved();
-  let siteBench = null,
+  let facilityBench = null,
+    siteBench = null,
     avevaPanel = null;
   let view = "",
     scene = null,
@@ -585,6 +586,8 @@
     }
   }
   function teardown() {
+    facilityBench?.destroy();
+    facilityBench = null;
     avevaPanel?.destroy();
     avevaPanel = null;
     siteBench?.destroy();
@@ -795,6 +798,7 @@
         "guide",
         "floor",
         "rack",
+        "facility",
         "installation",
         "business",
         "momentum",
@@ -827,7 +831,12 @@
       return;
     }
     if (view === "guide") {
-      window.PlantPath.mount(root, state, detail);
+      const services = window.FacilityServices.statusFor({
+        storageKey: key + ".facility",
+        readonly: readOnly,
+        worked: kind === "solved" || readOnly,
+      });
+      window.PlantPath.mount(root, state, detail, services);
       return;
     }
     const handover = SiteBuild.check(state.site);
@@ -1005,6 +1014,14 @@
     }
     const panel = document.createElement("div");
     root.replaceChildren(panel);
+    if (view === "facility") {
+      facilityBench = window.FacilityServices.mount(panel, {
+        storageKey: key + ".facility",
+        readonly: readOnly,
+        worked: kind === "solved" || readOnly,
+      });
+      return;
+    }
     if (view === "rack") {
       rack = window.FryRack.mount(
         panel,

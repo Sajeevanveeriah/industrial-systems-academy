@@ -4,6 +4,8 @@ Signal Works is a standalone personal academy with eight curriculum tracks, four
 
 ## Maintain the site
 
+Facility services is available from the fry plant at `#facility` and directly from `facility-services.html`. The embedded instance has a workspace-scoped storage key and the completed example is read-only. Keep public training geometry and example endpoint records independent of operational drawings. Check the standalone and embedded controls when changing this module.
+
 The linked software batch begins at `fries.html?mode=batch#momentum` with its own storage key. Momentum is the raw-receipt writer, APS releases the order against that receipt, the AVEVA panel drives the existing floor controller, and SAP reads or replays the existing inventory movements. Preserve the batch ID, order ID, lot, receipt ID, slot, historian samples and original movement IDs through reload, archive and replay. Earlier receipts/orders without original vendor evidence are labelled on import. The shift timestamps are simulated.
 
 The production software lab hub links independently scoped public cases to browser exercises for Momentum, AVEVA and APS 4FACTORY. Preserve the distinction between the Dutch or Polish implementation evidence and the unverified Dooen application inventory. Publish only public references and fictional training scenarios.
