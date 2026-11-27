@@ -86,6 +86,69 @@
       );
     return l;
   }
+  function receiveLot(state, { lot, kg: qty }) {
+    const ledger = ensure(state);
+    if (typeof lot !== "string" || !lot.trim() || !finite(qty) || qty <= 0)
+      return bad(
+        "Enter the supplier lot and a positive measured receipt mass.",
+      );
+    lot = lot.trim();
+    if (ledger.receiptKg > 0)
+      return ledger.lot === lot && close(ledger.receiptKg, qty)
+        ? ok("Previously recorded receipt acknowledged.")
+        : bad("A different receipt is already recorded on this batch.");
+    if (ledger.stages.length)
+      return bad("This batch is already in production.");
+    ledger.lot = lot;
+    ledger.receiptKg = qty;
+    ensure(state);
+    return ok("Raw receipt recorded for " + lot + ".");
+  }
+  function releaseOrder(state, { product, destination, plannedKg }) {
+    const ledger = ensure(state);
+    if (!validOrder({ product, destination, plannedKg }))
+      return bad("Enter a product, planned finished mass and destination.");
+    if (ledger.status === "Released") {
+      return ledger.product === product &&
+        ledger.destination === destination &&
+        ledger.plannedKg === plannedKg
+        ? ok("Original order release acknowledged.")
+        : bad("The released order already contains different planning data.");
+    }
+    if (ledger.stages.length || ledger.receiptKg < state.initialKg)
+      return bad(
+        "A released raw lot must cover the batch charge before scheduling.",
+      );
+    Object.assign(ledger, {
+      product,
+      destination,
+      plannedKg,
+      status: "Released",
+    });
+    return ok("Order released for the scheduled batch.");
+  }
+  function setOnline(state, value) {
+    ensure(state).online = value === true;
+    return {
+      ...ok(
+        value
+          ? "Interface restored. Replay queued postings."
+          : "Interface paused. Further movements will queue.",
+      ),
+      count: 0,
+    };
+  }
+  function replay(state) {
+    const ledger = ensure(state);
+    if (!ledger.online)
+      return { ...bad("Restore the interface before replay."), count: 0 };
+    const pending = ledger.moves.filter((row) => !row.posted);
+    for (const move of pending) move.posted = true;
+    return {
+      ...ok(pending.length + " new postings acknowledged."),
+      count: pending.length,
+    };
+  }
   function validOrder(l) {
     return (
       typeof l.product === "string" &&
@@ -267,21 +330,7 @@
       )
       .join("") +
     "</tbody></table></div>";
-  const field = (name, title, value, disabled, type = "text") =>
-    "<label>" +
-    esc(title) +
-    '<input data-field="' +
-    name +
-    '" type="' +
-    type +
-    '"' +
-    (type === "number" ? ' min="0.01" step="0.01"' : ' maxlength="80"') +
-    ' value="' +
-    esc(value || "") +
-    '"' +
-    (disabled ? " disabled" : "") +
-    "></label>";
-  function mount(root, state, onChange = () => {}) {
+  function mount(root, state, onChange = () => {}, options = {}) {
     const shell = document.createElement("section");
     shell.className = "fry-ledger";
     root.replaceChildren(shell);
@@ -302,34 +351,10 @@
         `</strong></div>
       <p>Release the order, receive the raw lot and follow each measured process gain and loss through to the delivery.</p>
       <details><summary>Worked order and posting example</summary><p>For the 1,000 kg potato batch, plan 700 kg of frozen straight-cut fries for Cold store DC-02. Receive lot POT-2601, then issue the actual potato charge to the order. For example, a stage taking 850 kg and removing 30 kg hands 820 kg to the next operation. Packing creates finished stock at its measured output. Dispatch issues that quantity to the delivery.</p></details>
-      <div class="fl-columns"><section><h3>Production order</h3><div class="fl-fields">` +
-        field("product", "Finished product", l.product, locked) +
-        field(
-          "plannedKg",
-          "Planned finished yield (kg)",
-          l.plannedKg,
-          locked,
-          "number",
-        ) +
-        field("destination", "Delivery destination", l.destination, locked) +
-        '</div><div class="fl-actions"><button data-do="release"' +
-        (locked ? " disabled" : "") +
-        '>Release order</button><button data-do="edit"' +
-        (!locked || l.stages.length ? " disabled" : "") +
-        '>Edit released order</button></div></section><section><h3>Raw lot receipt</h3><div class="fl-fields">' +
-        field("lot", "Raw lot", l.lot, hasReceipt) +
-        field(
-          "receiptDraft",
-          "Delivered quantity (kg)",
-          hasReceipt ? l.receiptKg : l.receiptDraft,
-          hasReceipt,
-          "number",
-        ) +
-        '</div><div class="fl-actions"><button data-do="receive"' +
-        (hasReceipt ? " disabled" : "") +
-        '>Receive raw lot</button><button data-do="sample"' +
-        (locked || hasReceipt || l.stages.length ? " disabled" : "") +
-        ">Apply sample order and receipt</button></div></section></div>" +
+      <div class="fl-actions"><a href="#momentum">Receive and release the raw lot in Momentum →</a><a href="#aps">Schedule the batch in APS →</a><a href="#sap">Trace SAP documents →</a></div>` +
+        (options.example && !locked && !hasReceipt
+          ? '<button data-do="sample">Apply worked receipt and schedule</button>'
+          : "") +
         facts([
           ["Order status", l.status],
           ["Raw lot receipt", received],
@@ -396,19 +421,6 @@
         '</section><p class="fl-notice" role="status"></p>';
       shell.querySelector(".fl-notice").textContent = notice;
     }
-    shell.addEventListener("input", (event) => {
-      const el = event.target,
-        key = el.dataset.field;
-      if (!key || el.disabled) return;
-      const l = ensure(state);
-      l[key] =
-        el.type === "number"
-          ? Number.isFinite(el.valueAsNumber)
-            ? el.valueAsNumber
-            : 0
-          : el.value;
-      onChange();
-    });
     shell.addEventListener("click", (event) => {
       const button = event.target.closest("button[data-do]");
       if (!button || button.disabled) return;
@@ -418,62 +430,15 @@
         case "sample":
           if (l.status !== "Draft" || l.stages.length || l.receiptKg > 0)
             return;
-          Object.assign(l, sample, { status: "Released" });
-          ensure(state);
-          notice =
-            "Sample order released and 1,000 kg received against lot POT-2601.";
-          break;
-        case "release":
-          if (!validOrder(l)) {
-            notice =
-              "Enter the product, positive planned yield and destination before release.";
-            break;
-          }
-          l.status = "Released";
-          notice = "Production order released.";
-          break;
-        case "edit":
-          if (l.stages.length) return;
-          l.status = "Draft";
-          notice = "Order reopened for editing.";
-          break;
-        case "receive":
-          if (l.receiptKg > 0) return;
-          if (
-            !l.lot.trim() ||
-            !finite(l.receiptDraft) ||
-            l.receiptDraft < state.initialKg
-          ) {
-            notice =
-              "Enter a lot and at least " +
-              kg(state.initialKg) +
-              " to cover the designed batch.";
-            break;
-          }
-          l.receiptKg = l.receiptDraft;
-          ensure(state);
-          notice = "Received " + kg(l.receiptKg) + " of lot " + l.lot + ".";
+          if (!options.example) return;
+          notice = options.example();
           break;
         case "online":
-          l.online = !l.online;
-          notice = l.online
-            ? "Interface restored. Replay queued postings to reconcile stock."
-            : "Interface offline. New inventory movements will queue.";
+          notice = setOnline(state, !l.online).why;
           break;
-        case "replay": {
-          if (!l.online) {
-            notice = "Replay paused while the interface is offline.";
-            break;
-          }
-          const pending = l.moves.filter((m) => !m.posted);
-          for (const m of pending) m.posted = true;
-          notice =
-            pending.length +
-            " new posting" +
-            (pending.length === 1 ? "" : "s") +
-            " acknowledged.";
+        case "replay":
+          notice = replay(state).why;
           break;
-        }
       }
       onChange();
       render();
@@ -485,6 +450,10 @@
     return { refresh: render };
   }
   window.FryLedger = Object.freeze({
+    receiveLot,
+    releaseOrder,
+    setOnline,
+    replay,
     empty,
     solved,
     ready,

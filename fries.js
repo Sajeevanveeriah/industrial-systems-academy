@@ -6,7 +6,9 @@
   const $ = (id) => document.getElementById(id),
     root = $("workspace");
   const mode = new URLSearchParams(location.search).get("mode");
-  const kind = ["solved", "worked", "fitout"].includes(mode) ? mode : "build";
+  const kind = ["solved", "worked", "fitout", "batch"].includes(mode)
+    ? mode
+    : "build";
   const readOnly = kind === "worked",
     key =
       kind === "build"
@@ -27,11 +29,13 @@
         })[c],
     );
   function blank(n = 1) {
-    const installed = kind === "solved" || kind === "worked";
-    const ledger = installed ? L.solved() : L.empty();
-    if (installed) ledger.lot = "POT-" + (2600 + n);
-    return {
+    const seeded = kind === "solved" || kind === "worked";
+    const installed = seeded || kind === "batch";
+    const ledger = seeded ? L.solved() : L.empty();
+    if (seeded) ledger.lot = "POT-" + (2600 + n);
+    const fresh = {
       version: 1,
+      journeyVersion: 1,
       site: kind === "build" ? SiteBuild.empty() : SiteBuild.solved(),
       n,
       batchId: "FRY-" + (1000 + n),
@@ -50,6 +54,84 @@
       holdLog: [],
       samples: [],
     };
+    if (seeded) adoptPrior(fresh);
+    return fresh;
+  }
+  function adoptPrior(s, legacy = false) {
+    if (s.ledger.receiptKg > 0 && s.ledger.lot) {
+      L.summary(s);
+      window.BatchMomentum.example(s);
+    }
+    if (legacy && s.ledger.status === "Released") {
+      s.aps = {
+        source: "prior-release",
+        prior: {
+          batchId: s.batchId,
+          orderId: s.orderId,
+          product: s.ledger.product,
+          destination: s.ledger.destination,
+          plannedKg: s.ledger.plannedKg,
+        },
+      };
+    } else if (
+      s.ledger.status === "Released" &&
+      window.BatchMomentum.ready(s).ok
+    ) {
+      s.aps = window.BatchAPS.example(s);
+      s.aps.source = "worked";
+    }
+    s.journeyVersion = 1;
+  }
+  function linked(s) {
+    const intake = window.BatchMomentum.ready(s);
+    return intake.ok ? window.BatchAPS.ready(s) : intake;
+  }
+  function exampleOrder() {
+    if (
+      readOnly ||
+      stale ||
+      kind === "batch" ||
+      state.events.length ||
+      state.ledger.receiptKg > 0 ||
+      (state.momentum?.stage && state.momentum.stage !== "draft")
+    )
+      return "Continue the current handover.";
+    const example = L.solved();
+    const result = L.receiveLot(state, {
+      lot: "POT-" + (2600 + state.n),
+      kg: state.initialKg,
+    });
+    if (!result.ok) return result.why;
+    const release = L.releaseOrder(state, example);
+    if (!release.ok) return release.why;
+    adoptPrior(state);
+    return (
+      "Worked lot, quality release and APS reservation loaded for " +
+      state.batchId +
+      "."
+    );
+  }
+  function shiftMinute(s, p) {
+    const slot = window.BatchAPS.slot(s);
+    if (!slot) return null;
+    return (
+      slot.startMin +
+      ((slot.endMin - slot.startMin) * (s.index + p)) / stages.length
+    );
+  }
+  function stamp(s) {
+    // Simulated planning shift is dated after receipt; real operating time is accelerated.
+    const minute = shiftMinute(s, s.progress);
+    if (minute === null) return new Date().toISOString();
+    if (!s.shiftDate) {
+      const receipt = Date.parse(s.momentum?.receivedAt || "");
+      const base = new Date(Number.isFinite(receipt) ? receipt : Date.now());
+      base.setUTCDate(base.getUTCDate() + 1);
+      s.shiftDate = base.toISOString().slice(0, 10);
+    }
+    return new Date(
+      Date.parse(s.shiftDate + "T00:00:00Z") + Math.round(minute * 60000),
+    ).toISOString();
   }
   function makeEvent(s, i) {
     const inputKg = i === 0 ? s.initialKg : s.events[i - 1].outputKg;
@@ -70,6 +152,10 @@
       inputKg,
       batchId: s.batchId,
       orderId: s.orderId,
+      rawLot: s.ledger.lot,
+      receiptId: s.momentum?.receiptId,
+      line: s.aps?.plan?.line,
+      ts: stamp(s),
       recipe: JSON.parse(JSON.stringify(s.configs[i])),
     };
   }
@@ -85,6 +171,7 @@
     if (!result.ok) throw Error(result.why);
     s.events.push(e);
     s.progress = 1;
+    sample("MES stage completion", e.id);
     return e;
   }
   let state = blank(),
@@ -113,9 +200,11 @@
     } catch {
       canSave = false;
     }
+  if (!state.journeyVersion) adoptPrior(state, true);
   if (!state.site)
     state.site = kind === "build" ? SiteBuild.empty() : SiteBuild.solved();
-  let siteBench = null;
+  let siteBench = null,
+    avevaPanel = null;
   let view = "",
     scene = null,
     rack = null,
@@ -182,6 +271,8 @@
       return "Station complete. Release the batch to the next stage.";
     const unmet = I.check(state.installation).find((c) => !c.ok);
     if (unmet) return "Installation needed: " + unmet.label + ". " + unmet.why;
+    const handoff = linked(state);
+    if (!handoff.ok) return handoff.why;
     const release = L.ready(state);
     if (!release.ok) return release.why;
     const process = P.check(state.index, state.configs[state.index]);
@@ -201,12 +292,19 @@
     }
     return "";
   }
-  function sample(command) {
+  function sample(command, eventId = null) {
     const cfg = state.configs[state.index],
       stage = stages[state.index];
     state.samples ||= [];
-    if (state.sensorStale) return;
     state.samples.push({
+      id: state.batchId + "/hist/" + (state.samples.length + 1),
+      ts: stamp(state),
+      quality: state.sensorStale ? "Stale" : "Good",
+      orderId: state.orderId,
+      lot: state.ledger.lot,
+      eventId,
+      stageId: stage.id,
+      kg: state.events.at(-1)?.outputKg ?? state.initialKg,
       batch: state.batchId,
       stage: stage.name,
       command,
@@ -301,6 +399,7 @@
   function transferPermitted() {
     return (
       SiteBuild.check(state.site).ok &&
+      linked(state).ok &&
       !readOnly &&
       !stale &&
       complete() &&
@@ -397,9 +496,11 @@
           ? "#rack"
           : "#installation";
         aid.textContent = "Open " + unmet.label + " commissioning →";
-      } else if (!L.ready(state).ok) {
-        aid.href = "#business";
-        aid.textContent = "Receive potatoes and release order →";
+      } else if (!linked(state).ok) {
+        aid.href = window.BatchMomentum.ready(state).ok ? "#aps" : "#momentum";
+        aid.textContent = aid.href.endsWith("#aps")
+          ? "Reserve the line in APS →"
+          : "Receive the potato lot in Momentum →";
       } else if (!P.check(state.index, state.configs[state.index]).ok) {
         aid.href = "#";
         aid.textContent = "Commission the current station →";
@@ -444,6 +545,11 @@
     const s = L.summary(state);
     $("business-live").innerHTML = metrics([
       ["Lot mass", fmt.format(mass()) + " kg"],
+      ["Reserved line", state.aps?.plan?.line || "Awaiting APS"],
+      [
+        "Simulated shift (UTC)",
+        state.aps?.plan ? stamp(state).slice(11, 19) : "Awaiting APS",
+      ],
       ["MES operations recorded", state.events.length + " / " + stages.length],
       ["SAP finished stock", fmt.format(s.sapFinished) + " kg"],
       ["Dispatched", fmt.format(s.dispatched) + " kg"],
@@ -462,8 +568,25 @@
       ? "Recorded or in-process recipe. Inspect the configuration here; future stages can be commissioned before their batch arrives."
       : "Mount the machine, connect the two I/O paths, set the recipe and prove fault recovery. Or load the worked station.";
     draw();
+    avevaPanel?.update();
+    const stepKey = [
+      state.batchId,
+      state.events.length,
+      state.index,
+      state.guard,
+      state.sensorStale,
+      P.check(state.index, state.configs[state.index]).ok,
+    ].join("/");
+    if ($("batch-route").dataset.stageKey !== stepKey) {
+      $("batch-route").dataset.stageKey = stepKey;
+      window.BatchJourney.guide($("batch-route"), state, {
+        go: goTo,
+      });
+    }
   }
   function teardown() {
+    avevaPanel?.destroy();
+    avevaPanel = null;
     siteBench?.destroy();
     siteBench = null;
     rack?.destroy();
@@ -506,7 +629,7 @@
             "</button>",
         )
         .join("") +
-      '</div></div><div class="runbar"><div class="ophead"><strong id="current"></strong><span><span id="flags" class="pill"></span> <span id="percent"></span></span></div><progress id="bar" max="1"></progress><div class="buttons"><button id="go" class="primary">Start / resume</button><button id="hold">Hold</button><button id="step">Step 25%</button><button id="transfer">Release to next stage</button></div></div><canvas tabindex="0" id="plant-canvas" aria-label="Interactive three-dimensional French fry plant"></canvas><div class="viewfoot"><strong id="recipe-tag"></strong><span id="picked">Drag to orbit. Select a machine to inspect its setup.</span><div class="buttons"><button id="stale-input">Simulate stale PLC tags</button><button id="trip">Open process permissive</button></div></div></section><aside class="dock"><section class="box"><h3>Operator HMI</h3><div id="operator"></div><a href="#installation">Configure screen and tags →</a></section><section class="box"><h3>MES and SAP readback</h3><div id="business-live"></div><a href="#business">Open the order and postings →</a></section><div class="statusline"><span id="feedback" role="status"></span><div id="next-task"></div></div></aside></div><section class="stage-editor"><h2 id="inspect-title"></h2><p id="recipe-state" class="subtle"></p><div class="buttons"><button id="stage-example">Apply worked station settings</button></div><fieldset id="station-config"></fieldset></section>';
+      '</div></div><div class="runbar"><div class="ophead"><strong id="current"></strong><span><span id="flags" class="pill"></span> <span id="percent"></span></span></div><progress id="bar" max="1"></progress><div class="buttons"><button id="go" class="primary">Start / resume</button><button id="hold">Hold</button><button id="step">Step 25%</button><button id="transfer">Release to next stage</button></div></div><canvas tabindex="0" id="plant-canvas" aria-label="Interactive three-dimensional French fry plant"></canvas><div class="viewfoot"><strong id="recipe-tag"></strong><span id="picked">Drag to orbit. Select a machine to inspect its setup.</span><div class="buttons"><button id="stale-input">Simulate stale PLC tags</button><button id="trip">Open process permissive</button></div></div></section><aside class="dock"><div id="aveva-dock"></div><details class="box" open><summary>Configured plant HMI</summary><div id="operator"></div><a href="#installation">Configure screen and tags →</a></details><section class="box"><h3>MES and SAP readback</h3><div id="business-live"></div><a href="#business">Open the order and postings →</a></section><div class="statusline"><span id="feedback" role="status"></span><div id="next-task"></div></div></aside></div><section class="stage-editor"><h2 id="inspect-title"></h2><p id="recipe-state" class="subtle"></p><div class="buttons"><button id="stage-example">Apply worked station settings</button></div><fieldset id="station-config"></fieldset></section>';
     for (const [i, s] of stages.entries()) {
       const b = document.createElement("button");
       b.dataset.inspect = i;
@@ -527,12 +650,17 @@
       );
     $("transfer").onclick = release;
     $("stale-input").onclick = () => {
+      const wasRunning = active;
       state.sensorStale = !state.sensorStale;
       if (state.sensorStale) {
         hold("Stale PLC data; process hold and historian sampling suspended.");
         notice =
           "PLC tags are stale. Verify quality on the operator screen, then restore the feed.";
       } else notice = "Tag feed restored. Verify quality and resume.";
+      if (!wasRunning || !state.sensorStale)
+        sample(
+          state.sensorStale ? "Tag quality stale" : "Tag quality restored",
+        );
       save();
       update();
     };
@@ -556,6 +684,31 @@
         ".";
       inspect(selected);
     };
+    if (kind === "batch") {
+      $("go").parentElement.hidden = true;
+      $("trip").parentElement.hidden = true;
+      const widgets = $("operator").closest("details");
+      widgets.open = false;
+      root.querySelector(".dock").append(widgets);
+    }
+    const station = document.createElement("section");
+    station.id = "batch-aveva";
+    root.querySelector(".stage-editor").before(station);
+    avevaPanel = window.BatchAveva.mount(station, state, {
+      tags,
+      save,
+      dock: $("aveva-dock"),
+      now: () => stamp(state),
+      readonly: readOnly,
+      canStart: () => allowed() || (active ? "Already running." : ""),
+      canTransfer: transferPermitted,
+      start: run,
+      hold: () => hold("Held from operator HMI."),
+      step: () => $("step").click(),
+      release,
+      trip: () => $("trip").click(),
+      stale: () => $("stale-input").click(),
+    });
     inspect(selected);
   }
   function history() {
@@ -614,6 +767,22 @@
         .join("") +
       "</section>";
   }
+  function goTo(hash) {
+    const next = "#" + hash.replace(/^#/, "");
+    if (location.hash !== next) {
+      location.hash = next;
+      return;
+    }
+    const target =
+      view === "floor" && !P.check(state.index, state.configs[state.index]).ok
+        ? $("inspect-title")
+        : view === "floor"
+          ? $("aveva-dock")
+          : root;
+    target.scrollIntoView({ block: "start" });
+    target.tabIndex = -1;
+    target.focus({ preventScroll: true });
+  }
   function render() {
     if (stale) return;
     if (active) hold("Paused on leaving the plant floor.");
@@ -628,14 +797,20 @@
         "rack",
         "installation",
         "business",
+        "momentum",
+        "aps",
+        "sap",
         "history",
       ].includes(view)
     )
-      view = kind === "build" ? "site" : "floor";
+      view =
+        kind === "build" ? "site" : kind === "batch" ? "momentum" : "floor";
     for (const a of document.querySelectorAll(".tabs a")) {
       if (a.hash === "#" + view) a.setAttribute("aria-current", "page");
       else a.removeAttribute("aria-current");
     }
+    const journey = $("batch-route");
+    journey.replaceChildren();
     const guide = $("field-instruction");
     guide.replaceChildren();
     if (view === "site") {
@@ -661,6 +836,48 @@
         '<section class="box site-blocked"><h2>Prepare the site for fit-out</h2><p>' +
         html(handover.why) +
         '</p><a class="primary path-action" href="#site">Continue site construction →</a> <a href="#guide">See the build sequence</a></section>';
+      return;
+    }
+    const go = goTo;
+    const journeyPage = ["momentum", "aps", "floor", "sap"].includes(view);
+    const refreshGuide = () => {
+      if (journeyPage) window.BatchJourney.guide(journey, state, { go });
+    };
+    refreshGuide();
+    const ctx = {
+      go,
+      readonly: readOnly,
+      locked: () =>
+        stale || active || state.progress > 0 || !!state.events.length,
+      save: () => {
+        save();
+        refreshGuide();
+      },
+    };
+    if (view === "momentum" || view === "aps") {
+      const station = document.createElement("section");
+      root.replaceChildren(station);
+      (view === "momentum" ? window.BatchMomentum : window.BatchAPS).mount(
+        station,
+        state,
+        ctx,
+      );
+      return;
+    }
+    if (view === "sap") {
+      root.replaceChildren();
+      const mutate = (fn) => {
+        if (readOnly || stale)
+          return { ok: false, why: "Read-only trace.", count: 0 };
+        const result = fn();
+        ctx.save();
+        return result;
+      };
+      window.BatchJourney.trace(root, state, {
+        ...ctx,
+        setOnline: (v) => mutate(() => L.setOnline(state, v)),
+        replay: () => mutate(() => L.replay(state)),
+      });
       return;
     }
     const stageIndex = stages.findIndex((stage) => stage.id === detail);
@@ -711,6 +928,15 @@
             orderId: state.orderId,
             events: state.events,
             ledger: state.ledger,
+            momentum: state.momentum,
+            aps: state.aps,
+            samples: state.samples,
+            avevaAlarmRecord: state.avevaAlarmRecord,
+            shiftDate: state.shiftDate,
+            initialKg: state.initialKg,
+            n: state.n,
+            index: state.index,
+            progress: state.progress,
           };
           const history = [...state.history, prior];
           const fresh = blank(state.n + 1);
@@ -722,7 +948,7 @@
           selected = 0;
           notice = "Installation retained. A new batch is ready for planning.";
           save();
-          location.hash = "floor";
+          location.hash = kind === "batch" ? "momentum" : "floor";
         };
         root.append(next);
       }
@@ -760,6 +986,19 @@
           moves.append(li);
         }
         item.append(moves);
+        if (past.momentum && past.aps) {
+          const trace = document.createElement("section");
+          item.append(trace);
+          item.addEventListener("toggle", () => {
+            if (item.open && !trace.hasChildNodes())
+              window.BatchJourney.trace(trace, past, {
+                readonly: true,
+                go: (hash) => {
+                  location.hash = hash.replace(/^#/, "");
+                },
+              });
+          });
+        }
         root.append(item);
       }
       return;
@@ -795,7 +1034,10 @@
       });
       if (I.check(state.installation).some((row) => row.id === detail))
         panel.querySelector('[data-fi-tab="' + detail + '"]')?.click();
-    } else L.mount(panel, state, save);
+    } else
+      L.mount(panel, state, save, {
+        example: kind === "batch" || readOnly ? null : exampleOrder,
+      });
     if (readOnly) {
       const lock = () =>
         panel
@@ -812,16 +1054,20 @@
     const u = new URL(location.href);
     u.searchParams.set("mode", e.target.value);
     u.hash =
-      e.target.value === "worked"
-        ? "history"
-        : e.target.value === "build"
-          ? "site"
-          : e.target.value === "fitout"
-            ? "rack"
-            : "floor";
+      e.target.value === "batch"
+        ? "momentum"
+        : e.target.value === "worked"
+          ? "history"
+          : e.target.value === "build"
+            ? "site"
+            : e.target.value === "fitout"
+              ? "rack"
+              : "floor";
     location.href = u.href;
   };
   $("mode-note").textContent = {
+    batch:
+      "Installed plant with an empty material receipt and schedule. Start by weighing the delivery in Momentum. All four workstations share this batch.",
     fitout:
       "The buildings and utilities are commissioned. Install the systems inside them. Earlier build-from-rack work resumes here.",
     build:

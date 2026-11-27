@@ -144,13 +144,15 @@
         c.why,
         ["rack", "patch"].includes(c.id) ? "#rack" : "#installation/" + c.id,
       );
-    const order = FryLedger.ready(state);
-    add(
-      "Release the order and receive the raw lot",
-      order.ok || state.events.length > 0,
-      order.why,
-      "#business",
-    );
+    for (const [title, url, test] of [
+      [
+        "Receive, clear and put away the potato lot in Momentum",
+        "#momentum",
+        BatchMomentum.ready(state),
+      ],
+      ["Schedule and release the order in APS", "#aps", BatchAPS.ready(state)],
+    ])
+      add(title, test.ok, test.why, url);
     for (const [i, s] of FryProcess.stages.entries()) {
       const recorded = state.events.some((e) => e.index === i);
       const checked = FryProcess.check(i, state.configs[i]);
@@ -172,7 +174,7 @@
       queued
         ? queued + " postings await SAP acknowledgement."
         : "Compare the finished weight and posting history.",
-      queued ? "#business" : "#history",
+      "#sap",
     );
     const next = rows.find((r) => !r.ok);
     card.append(node("h3", next ? "Next action" : "Project complete"));

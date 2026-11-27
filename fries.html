@@ -17,6 +17,11 @@
     <script defer src="site-scene.js"></script>
     <script defer src="site-build.js"></script>
     <script defer src="plant-path.js"></script>
+    <script defer src="batch-momentum.js"></script>
+    <script defer src="batch-aps.js"></script>
+    <script defer src="batch-aveva.js"></script>
+    <script defer src="batch-journey.js"></script>
+    <link rel="stylesheet" href="batch-journey.css" />
     <script defer src="fries.js"></script>
   </head>
   <body>
@@ -42,6 +47,7 @@
         <div class="mode">
           <label for="mode">Workspace</label
           ><select id="mode">
+            <option value="batch">Run the integrated software batch</option>
             <option value="build">Build from vacant land</option>
             <option value="fitout">Fit out existing buildings</option>
             <option value="solved">Operate installed plant</option>
@@ -53,11 +59,14 @@
       <nav class="tabs" aria-label="Plant workspaces">
         <a href="#site">Site construction</a
         ><a href="#guide">Step-by-step guide</a
-        ><a href="#floor">3D plant floor</a><a href="#rack">Rack &amp; wiring</a
+        ><a href="#momentum">Momentum receipt</a><a href="#aps">APS schedule</a
+        ><a href="#floor">AVEVA · 3D floor</a><a href="#sap">SAP trace</a
+        ><a href="#rack">Rack &amp; wiring</a
         ><a href="#installation">Systems commissioning</a
-        ><a href="#business">MES &amp; SAP</a
+        ><a href="#business">Inventory ledger</a
         ><a href="#history">Batch genealogy</a>
       </nav>
+      <div id="batch-route"></div>
       <div id="field-instruction"></div>
       <section id="workspace" tabindex="-1"></section>
       <p id="storage" role="status"></p>

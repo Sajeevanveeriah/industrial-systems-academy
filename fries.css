@@ -456,3 +456,7 @@ input:focus-visible {
 .site-blocked {
   padding: 20px;
 }
+
+.viewport .buttons[hidden] {
+  display: none;
+}

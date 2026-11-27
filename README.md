@@ -2,6 +2,8 @@
 
 ## French fry plant
 
+[Run one batch across Momentum, APS, AVEVA and SAP](https://industrial-systems-academy.pages.dev/fries?mode=batch#momentum). This workspace supplies a commissioned model plant and a draft order. Receive the actual potato lot from its weighbridge ticket, release quality stock, reserve a production slot, operate all ten stations from the InTouch-style panel, and reconcile the same movements in the SAP trace. The guide follows the current handover. The software names describe public workflows modelled for training; the combined interfaces and shift clock are fictional. Run `node tests/batch.cjs` for the end-to-end regression, optionally passing the deployed base URL.
+
 [Production software labs](https://industrial-systems-academy.pages.dev/vendor-labs) cover Brighteye Momentum MES workflows, AVEVA InTouch and Historian workflows, and APS 4FACTORY scheduling. The lab page links the public implementation evidence by location and date. Each exercise uses fictional orders, signals or materials.
 
 Start the [guided greenfield build](https://industrial-systems-academy.pages.dev/fries?mode=build#site) on a vacant 24-cell parcel. Survey it, lay out six buildings, choose and place their foundations, frames and shell finishes, connect eight services, and prove vehicle access before handover. Select a completed building to enter its workshop. The [step-by-step guide](https://industrial-systems-academy.pages.dev/fries?mode=build#guide) explains the actions, purpose, acceptance checks and fault recovery from the plot survey to dispatch. The [worked site](https://industrial-systems-academy.pages.dev/fries?mode=worked#site) shows the accepted arrangement.
