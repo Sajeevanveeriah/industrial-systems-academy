@@ -28,6 +28,7 @@ const assert = require("node:assert/strict"),
     assert.equal(await p.locator(".chapter:not(.transcript)").count(), 5);
     const v = p.locator("video");
     await v.waitFor();
+    await p.waitForFunction(()=>{const el=document.querySelector("video");return el.controls && el.readyState>=1;});
     await v.evaluate(async (el) => {
       el.muted = true;
       await el.play();
@@ -55,6 +56,7 @@ const assert = require("node:assert/strict"),
         document.querySelector("video").readyState >= 2 &&
         !document.querySelector("video").seeking,
     );
+    await p.waitForFunction(()=>{const el=document.querySelector("video");return Math.abs(el.currentTime-el.duration*.7)<2;});
     for (const [scene, answer] of [
       ["healthy", "all"],
       ["fibre", "source"],
