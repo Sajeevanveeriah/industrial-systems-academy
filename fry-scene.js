@@ -1417,6 +1417,12 @@
     return {
       draw,
       camera,
+      focusStation(index) {
+        if (!Number.isInteger(index) || index < 0 || index >= stages.length)
+          return;
+        selected = index;
+        camera("station");
+      },
       destroy() {
         if (disposed) return;
         disposed = true;

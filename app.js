@@ -117,10 +117,10 @@ const previewState = {
   powered: true,
 };
 let roomPreview = null,
-  fryPreview = null;
+  sitePreview = null;
 function stopRoomPreview() {
-  fryPreview?.destroy();
-  fryPreview = null;
+  sitePreview?.destroy();
+  sitePreview = null;
   roomPreview?.destroy();
   roomPreview = null;
 }
@@ -189,17 +189,11 @@ function dashboard(toTracks) {
   resume.href = nextStudy();
   resume.textContent = last ? "Resume learning" : "Start learning";
   mountRoomPreview();
-  fryPreview = window.FryScene.mount(
+  sitePreview = window.SiteScene.mount(
     document.querySelector("#fry-preview"),
     () => {},
   );
-  fryPreview.draw({
-    index: 2,
-    progress: 0.35,
-    batch: "FRY-1001",
-    installed: Array(10).fill(true),
-    running: false,
-  });
+  sitePreview.draw(window.SiteBuild.solved(), null);
   const grid = document.querySelector("#track-grid");
   const empty = document.querySelector(".empty");
   function filter(query) {

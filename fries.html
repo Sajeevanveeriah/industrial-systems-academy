@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>French fry plant | Signal Works</title>
     <link rel="stylesheet" href="fries.css" />
+    <link rel="stylesheet" href="site-build.css" />
     <link rel="stylesheet" href="fry-install.css" />
     <link rel="stylesheet" href="fry-ledger.css" />
     <script defer src="fry-process.js"></script>
@@ -12,6 +13,10 @@
     <script defer src="fry-ledger.js"></script>
     <script defer src="fry-scene.js"></script>
     <script defer src="fry-rack.js"></script>
+    <script defer src="site-guide.js"></script>
+    <script defer src="site-scene.js"></script>
+    <script defer src="site-build.js"></script>
+    <script defer src="plant-path.js"></script>
     <script defer src="fries.js"></script>
   </head>
   <body>
@@ -28,12 +33,16 @@
         <div>
           <p class="over">PROCESS ENGINEERING WORKSHOP</p>
           <h1>French fry plant</h1>
-          <p>Take one potato lot from intake to frozen packs and dispatch.</p>
+          <p>
+            Build the site, commission the equipment and dispatch your first
+            batch of frozen fries.
+          </p>
         </div>
         <div class="mode">
           <label for="mode">Workspace</label
           ><select id="mode">
-            <option value="build">Build from empty</option>
+            <option value="build">Build from vacant land</option>
+            <option value="fitout">Fit out existing buildings</option>
             <option value="solved">Operate installed plant</option>
             <option value="worked">Inspect completed example</option>
           </select>
@@ -41,11 +50,14 @@
       </div>
       <div id="mode-note"></div>
       <nav class="tabs" aria-label="Plant workspaces">
-        <a href="#floor">3D plant floor</a><a href="#rack">Rack &amp; wiring</a
+        <a href="#site">Site construction</a
+        ><a href="#guide">Step-by-step guide</a
+        ><a href="#floor">3D plant floor</a><a href="#rack">Rack &amp; wiring</a
         ><a href="#installation">Systems commissioning</a
         ><a href="#business">MES &amp; SAP</a
         ><a href="#history">Batch genealogy</a>
       </nav>
+      <div id="field-instruction"></div>
       <section id="workspace" tabindex="-1"></section>
       <p id="storage" role="status"></p>
     </main>

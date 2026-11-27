@@ -17,7 +17,7 @@ const { chromium } = require("playwright");
     const visit = (mode, section) =>
       p.goto(new URL("fries.html?mode=" + mode + "#" + section, base).href);
     const nav = (id) => p.locator('.tabs a[href="#' + id + '"]').click();
-    await visit("build", "floor");
+    await visit("fitout", "floor");
     await p.locator("#route button").first().waitFor();
     assert.equal(await p.locator("#route button").count(), 10);
     await p.locator("#go").click();

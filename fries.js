@@ -6,9 +6,12 @@
   const $ = (id) => document.getElementById(id),
     root = $("workspace");
   const mode = new URLSearchParams(location.search).get("mode");
-  const kind = ["solved", "worked"].includes(mode) ? mode : "build";
+  const kind = ["solved", "worked", "fitout"].includes(mode) ? mode : "build";
   const readOnly = kind === "worked",
-    key = "signalworks.fries.v1." + kind;
+    key =
+      kind === "build"
+        ? "signalworks.fries.v2.build"
+        : "signalworks.fries.v1." + (kind === "fitout" ? "build" : kind);
   const stages = P.stages,
     fmt = new Intl.NumberFormat("en-AU", { maximumFractionDigits: 2 });
   const html = (value) =>
@@ -24,11 +27,12 @@
         })[c],
     );
   function blank(n = 1) {
-    const installed = kind !== "build";
+    const installed = kind === "solved" || kind === "worked";
     const ledger = installed ? L.solved() : L.empty();
     if (installed) ledger.lot = "POT-" + (2600 + n);
     return {
       version: 1,
+      site: kind === "build" ? SiteBuild.empty() : SiteBuild.solved(),
       n,
       batchId: "FRY-" + (1000 + n),
       orderId: "PO-" + (7100 + n),
@@ -109,6 +113,9 @@
     } catch {
       canSave = false;
     }
+  if (!state.site)
+    state.site = kind === "build" ? SiteBuild.empty() : SiteBuild.solved();
+  let siteBench = null;
   let view = "",
     scene = null,
     rack = null,
@@ -167,6 +174,8 @@
     if (readOnly)
       return "This is a completed example. Choose Operate installed plant to run it yourself.";
     if (stale) return "Load the current saved workspace.";
+    const handover = SiteBuild.check(state.site);
+    if (!handover.ok) return handover.why;
     if (state.sensorStale)
       return "SCADA process data is stale. Restore the PLC tag feed before operating this training line.";
     if (complete())
@@ -291,6 +300,7 @@
   }
   function transferPermitted() {
     return (
+      SiteBuild.check(state.site).ok &&
       !readOnly &&
       !stale &&
       complete() &&
@@ -454,6 +464,8 @@
     draw();
   }
   function teardown() {
+    siteBench?.destroy();
+    siteBench = null;
     rack?.destroy();
     rack = null;
     if (scene) {
@@ -463,6 +475,7 @@
   }
   function inspect(index, focus = false) {
     selected = index;
+    window.PlantPath.context($("field-instruction"), "floor", "", index);
     $("picked").textContent = "Inspecting " + stages[index].name + ".";
     $("station-config").replaceChildren();
     P.mount($("station-config"), index, state.configs[index], (config) => {
@@ -605,17 +618,57 @@
     if (stale) return;
     if (active) hold("Paused on leaving the plant floor.");
     teardown();
-    view = location.hash.slice(1);
+    const [destination, detail] = location.hash.slice(1).split("/");
+    view = destination;
     if (
-      !["floor", "rack", "installation", "business", "history"].includes(view)
+      ![
+        "site",
+        "guide",
+        "floor",
+        "rack",
+        "installation",
+        "business",
+        "history",
+      ].includes(view)
     )
-      view = "floor";
+      view = kind === "build" ? "site" : "floor";
     for (const a of document.querySelectorAll(".tabs a")) {
       if (a.hash === "#" + view) a.setAttribute("aria-current", "page");
       else a.removeAttribute("aria-current");
     }
+    const guide = $("field-instruction");
+    guide.replaceChildren();
+    if (view === "site") {
+      root.replaceChildren();
+      siteBench = window.SiteBuild.mount(
+        root,
+        state.site,
+        (next) => {
+          if (next) state.site = next;
+          save();
+        },
+        readOnly,
+      );
+      return;
+    }
+    if (view === "guide") {
+      window.PlantPath.mount(root, state, detail);
+      return;
+    }
+    const handover = SiteBuild.check(state.site);
+    if (!handover.ok && view !== "history") {
+      root.innerHTML =
+        '<section class="box site-blocked"><h2>Prepare the site for fit-out</h2><p>' +
+        html(handover.why) +
+        '</p><a class="primary path-action" href="#site">Continue site construction →</a> <a href="#guide">See the build sequence</a></section>';
+      return;
+    }
+    const stageIndex = stages.findIndex((stage) => stage.id === detail);
+    if (view === "floor") selected = stageIndex >= 0 ? stageIndex : state.index;
+    window.PlantPath.context(guide, view, detail, selected);
     if (view === "floor") {
       floor();
+      if (stageIndex >= 0) scene?.focusStation(stageIndex);
       return;
     }
     if (view === "history") {
@@ -662,6 +715,7 @@
           const history = [...state.history, prior];
           const fresh = blank(state.n + 1);
           fresh.history = history;
+          fresh.site = state.site;
           fresh.installation = state.installation;
           fresh.configs = state.configs;
           state = fresh;
@@ -729,6 +783,18 @@
         if (config) state.installation = config;
         save();
       });
+      panel.addEventListener("click", (event) => {
+        const tab = event.target.closest("[data-fi-tab]");
+        if (tab)
+          window.PlantPath.context(
+            $("field-instruction"),
+            "installation",
+            tab.dataset.fiTab,
+            selected,
+          );
+      });
+      if (I.check(state.installation).some((row) => row.id === detail))
+        panel.querySelector('[data-fi-tab="' + detail + '"]')?.click();
     } else L.mount(panel, state, save);
     if (readOnly) {
       const lock = () =>
@@ -745,12 +811,21 @@
   $("mode").onchange = (e) => {
     const u = new URL(location.href);
     u.searchParams.set("mode", e.target.value);
-    u.hash = e.target.value === "worked" ? "history" : "floor";
+    u.hash =
+      e.target.value === "worked"
+        ? "history"
+        : e.target.value === "build"
+          ? "site"
+          : e.target.value === "fitout"
+            ? "rack"
+            : "floor";
     location.href = u.href;
   };
   $("mode-note").textContent = {
+    fitout:
+      "The buildings and utilities are commissioned. Install the systems inside them. Earlier build-from-rack work resumes here.",
     build:
-      "Empty workshop. Install the control stack, receive and release an order, then fit and commission each process station.",
+      "Greenfield workshop. Start on vacant land and use the site guide to build and inspect the facility before equipment fit-out.",
     solved:
       "Solved installation and released order. Operate each stage yourself and inspect the settings that make it work.",
     worked:

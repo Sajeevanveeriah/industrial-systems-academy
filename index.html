@@ -16,7 +16,8 @@
     <link rel="stylesheet" href="style.css" />
     <script defer src="lessons.js"></script>
     <script defer src="room-view.js"></script>
-    <script defer src="fry-scene.js"></script>
+    <script defer src="site-build.js"></script>
+    <script defer src="site-scene.js"></script>
     <script defer src="app.js"></script>
   </head>
   <body>
@@ -42,23 +43,26 @@
       <section class="hero workshop-hero" aria-labelledby="hero-title">
         <div class="hero-copy">
           <div class="eyebrow">Industrial Systems Academy</div>
-          <h1 id="hero-title">Build a French<br />fry plant.</h1>
+          <h1 id="hero-title">Build the plant<br />from the ground up.</h1>
           <p>
-            Install the controls and machinery, then follow a potato batch from
-            the receiving hopper to frozen packs and dispatch.
+            Survey an empty site, place the buildings, connect utilities and fit
+            out the factory. Then take a potato batch all the way to dispatch.
           </p>
           <div class="actions">
-            <a class="btn" href="fries.html?mode=solved#floor"
-              >Operate the 3D fry line →</a
-            ><a href="fries.html?mode=build#rack">Build from empty</a
-            ><a href="fries.html?mode=worked#history">Inspect a solved batch</a>
+            <a class="btn" href="fries.html?mode=build#site"
+              >Start on vacant land →</a
+            >
+            <a href="fries.html?mode=worked#site">Inspect the worked site</a>
+            <a href="fries.html?mode=solved#floor"
+              >Operate the installed line</a
+            >
           </div>
         </div>
         <div class="line-visual">
           <canvas
             id="fry-preview"
             role="img"
-            aria-label="Three-dimensional French fry plant from potato receiving through dispatch. Drag to orbit."
+            aria-label="Worked site layout with six industrial buildings, utility routes and access roads. Drag to orbit."
           ></canvas>
         </div>
       </section>

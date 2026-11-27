@@ -417,3 +417,42 @@ input:focus-visible {
 .viewport .buttons {
   margin: 5px 0;
 }
+.path-instruction,
+.path-progress,
+.site-blocked {
+  border: 1px solid #bbcfc0;
+  border-radius: 9px;
+  margin: 10px 0 16px;
+  padding: 10px 15px;
+  background: #edf3ea;
+}
+.path-instruction p,
+.path-progress p {
+  margin: 0.25em 0;
+}
+.path-instruction details,
+.path-progress details {
+  margin: 0.35em 0 0;
+}
+.path-instruction summary,
+.path-progress summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+.path-progress li {
+  padding: 0.23em;
+}
+.path-progress li small {
+  margin-left: 0.7em;
+  color: #465f51;
+}
+.path-action {
+  display: inline-block;
+  border-radius: 5px;
+  padding: 0.45em 0.7em;
+  text-decoration: none;
+  margin-right: 10px;
+}
+.site-blocked {
+  padding: 20px;
+}

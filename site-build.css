@@ -1,0 +1,308 @@
+.sb-build {
+  --sb-text: #172f27;
+  --sb-muted: #486155;
+  --sb-line: #bfcfc1;
+  --sb-accent: #175d45;
+  --sb-wash: #eef5eb;
+  color-scheme: light;
+  color: var(--sb-text);
+  font-family: Inter, "Segoe UI", Arial, sans-serif;
+  line-height: 1.45;
+  min-width: 0;
+}
+.sb-build *,
+.sb-build *::before,
+.sb-build *::after {
+  box-sizing: border-box;
+}
+.sb-build h2,
+.sb-build h3,
+.sb-build h4,
+.sb-build p {
+  margin: 0;
+}
+.sb-build h2 {
+  font-size: clamp(1.5rem, 3vw, 2.4rem);
+  line-height: 1.08;
+  letter-spacing: -0.045em;
+}
+.sb-build h3 {
+  font-size: 1.15rem;
+  letter-spacing: -0.025em;
+  line-height: 1.22;
+}
+.sb-build h4 {
+  font-size: 1rem;
+}
+.sb-build a {
+  color: var(--sb-accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.sb-build button,
+.sb-build select,
+.sb-build input:not([type="checkbox"]):not([type="radio"]) {
+  color: var(--sb-text);
+  background: #fff;
+  border: 1px solid #8ba594;
+  border-radius: 6px;
+  padding: 8px 11px;
+  font: inherit;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 40px;
+}
+.sb-build button {
+  cursor: pointer;
+  font-size: 0.88rem;
+  font-weight: 650;
+}
+.sb-build button:disabled,
+.sb-build select:disabled,
+.sb-build input:disabled {
+  opacity: 0.56;
+  cursor: default;
+}
+.sb-build button:not(:disabled):hover {
+  background: #e4efdf;
+  border-color: var(--sb-accent);
+}
+.sb-build button[aria-current="step"],
+.sb-build button[aria-selected="true"],
+.sb-build button[aria-pressed="true"] {
+  color: #fff;
+  background: var(--sb-accent);
+  border-color: var(--sb-accent);
+}
+.sb-build button[aria-current="step"]:hover,
+.sb-build button[aria-pressed="true"]:hover {
+  background: #124735;
+  color: #fff;
+}
+.sb-build :focus-visible {
+  outline: 3px solid #a04c21;
+  outline-offset: 3px;
+}
+.sb-build .sb-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.85fr) minmax(310px, 0.95fr);
+  align-items: start;
+  gap: 16px;
+}
+.sb-build .sb-viewport,
+.sb-build .sb-inspector {
+  min-width: 0;
+  border: 1px solid var(--sb-line);
+  border-radius: 12px;
+  background: #fff;
+  overflow: hidden;
+}
+.sb-build .sb-viewport {
+  position: sticky;
+  top: 8px;
+  background: #eef3eb;
+  box-shadow: 0 5px 19px #2646310a;
+}
+.sb-build .sb-viewport canvas {
+  display: block;
+  width: 100%;
+  height: clamp(380px, 55vh, 640px);
+  outline-offset: -4px;
+  background: #e8f0e8;
+  touch-action: none;
+}
+.sb-build .sb-inspector {
+  padding: clamp(13px, 1.5vw, 21px);
+  display: grid;
+  gap: 13px;
+}
+.sb-build .sb-inspector nav {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 5px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--sb-line);
+}
+.sb-build [data-sb-step] {
+  min-height: 34px;
+  padding: 5px 9px;
+  font-size: 0.8rem;
+}
+.sb-build .sb-actions {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+.sb-build .sb-viewport .sb-actions {
+  padding: 8px 12px;
+  background: #f7faf5;
+  border-top: 1px solid var(--sb-line);
+}
+.sb-build .sb-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(155px, 100%), 1fr));
+  gap: 9px;
+}
+.sb-build label {
+  display: grid;
+  gap: 4px;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--sb-muted);
+}
+.sb-build input[type="checkbox"],
+.sb-build input[type="radio"] {
+  accent-color: var(--sb-accent);
+}
+.sb-build .sb-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 4px;
+  width: 100%;
+  max-width: 440px;
+}
+.sb-build [data-sb-cell] {
+  min-width: 0;
+  min-height: 39px;
+  overflow-wrap: anywhere;
+  padding: 5px 2px;
+  font:
+    650 0.76rem/1.2 Consolas,
+    monospace;
+  border-radius: 4px;
+}
+.sb-build .sb-hint,
+.sb-build .sb-brief,
+.sb-build .sb-guide {
+  font-size: 0.9rem;
+  color: var(--sb-muted);
+}
+.sb-build .sb-brief,
+.sb-build .sb-guide {
+  background: var(--sb-wash);
+  padding: 11px 13px;
+  border-radius: 6px;
+}
+.sb-build .sb-guide summary,
+.sb-build summary {
+  font-weight: 650;
+  color: var(--sb-accent);
+  cursor: pointer;
+}
+.sb-build .sb-status:not(:empty) {
+  padding: 8px 11px;
+  border-left: 3px solid #6b936f;
+  background: #eef5e8;
+  color: var(--sb-text);
+  font-size: 0.9rem;
+}
+.sb-build .sb-roster {
+  display: grid;
+  gap: 5px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.sb-build .sb-roster li {
+  padding: 6px 0;
+  border-bottom: 1px solid #d7e2d7;
+  font-size: 0.9rem;
+}
+.sb-build ul,
+.sb-build ol {
+  padding-inline-start: 1.3rem;
+}
+.sb-build .sb-inspector section {
+  min-width: 0;
+}
+@media (max-width: 1050px) {
+  .sb-build .sb-layout {
+    grid-template-columns: minmax(0, 1.4fr) minmax(300px, 1fr);
+    gap: 11px;
+  }
+  .sb-build .sb-viewport canvas {
+    height: clamp(350px, 51vh, 475px);
+  }
+}
+@media (max-width: 730px) {
+  .sb-build .sb-layout {
+    grid-template-columns: 1fr;
+  }
+  .sb-build .sb-viewport {
+    position: static;
+  }
+  .sb-build .sb-viewport canvas {
+    height: clamp(245px, 56vw, 365px);
+  }
+  .sb-build .sb-inspector {
+    padding: 13px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sb-build * {
+    scroll-behavior: auto;
+  }
+}
+.sb-build .sb-viewport > h3 {
+  padding: 12px 16px;
+  background: #fff;
+  border-bottom: 1px solid var(--sb-line);
+}
+.sb-build [data-sb-panel] {
+  display: grid;
+  gap: 10px;
+}
+.sb-build [data-sb-panel] > button,
+.sb-build [data-sb="guide"] {
+  justify-self: start;
+}
+.sb-build [data-sb-msg]:not(:empty),
+.sb-build [data-sb-selection]:not(:empty) {
+  background: #edf4e8;
+  padding: 7px 10px;
+  color: #274d38;
+  border-left: 3px solid #7e9e67;
+}
+.sb-build [data-sb-msg]:empty,
+.sb-build [data-sb-selection]:empty {
+  display: none;
+}
+.sb-build [data-sb-cell] b,
+.sb-build [data-sb-cell] small {
+  display: block;
+}
+.sb-build [data-sb-cell] small {
+  font:
+    normal 0.62rem/1.2 Inter,
+    "Segoe UI",
+    sans-serif;
+  margin-top: 2px;
+}
+.sb-build .sb-hint[open] p {
+  margin-top: 6px;
+}
+.sb-build .sb-roster li {
+  list-style: none;
+}
+.sb-build .sb-inspector h3 {
+  font-size: 1.3rem;
+}
+.sb-build .sb-actions .primary {
+  color: #fff;
+  background: var(--sb-accent);
+}
+.sb-build button[data-sb="guide"] {
+  min-height: 32px;
+  padding: 3px 0;
+  border: 0;
+  background: transparent;
+  color: var(--sb-accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.sb-build button[data-sb="guide"]:hover {
+  background: transparent;
+  color: #153929;
+}
